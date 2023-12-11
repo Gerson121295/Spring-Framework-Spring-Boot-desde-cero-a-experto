@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text="${titulo}"></title>
+</head>
+<body>
+
+	<h1 th:text="${titulo}"></h1>
+
+	<!-- Muestra si no hay usuarios: en lugar de preguntar el tamaño con: th:if="${usuarios.size()==0} podemos preguntar si esta vacio: usuarios.isEmpty()  -->
+	<div th:if="${usuarios.size()==0}">No hay usuarios en la lista!</div>
+
+	<!-- Muestra si hay usuarios -->
+	<table th:if="${usuarios.size()>0}"> <!-- { not usuarios.isEmpty()} -->
+		<thead>
+			<tr>
+				<th>Nombre</th>
+				<th>Apellido</th>
+				<th>Email</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr th:each="usuario: ${usuarios}">
+				<td th:text="${usuario.nombre}"></td>
+				<td th:text="${usuario.apellido}"></td>
+				<td th:text="${usuario.email}"></td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">  <!-- xmlns para pasar los datos desde el controle a la vista index -->
+<head>
+<meta charset="UTF-8" />
+<title th:text="${titulo}"></title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"><link> <!--  El arroba hace referencia a cualquier ruta(estatica) --> 
+</head>
+<body>
+
+<h1 class="color-rojo" th:text="${titulo}"></h1>
+<h2 class="color-azul">Decorando con estilos css recursos estáticos</h2>
+<img alt="Logo Spring" th:src="@{/images/logo_spring.png}"></img>
+
+
+</body>
+</html>
+
+
+<!-- 
+
+***   Agregar un archivo.html   *** 
+
+-- Crear una vista a proyecto Spring boot web
+- Clic en la carpeta templates -> New -> Other -> Web -> Seleccionar HTML File -> Agregar nombre: index.html (los nombres de las vistas siempre van en minusculas)
+En la vista index: en meta cambiamos el charset a UTF-8: <meta charset="UTF-8" /> y nos aseguramos que la vista tenga ese caracter: damos clic derecho sobre la vista
+index.html -> clic properties -> Revisamos que en Text File encoding tenga UTF-8
+
+-->
+
+
+
+
