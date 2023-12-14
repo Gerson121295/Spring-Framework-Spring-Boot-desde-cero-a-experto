@@ -20,6 +20,10 @@ la carpeta css de static
 
 </head>
 <body>
+
+<!-- Pegamos el componente del codigo .html Tiempo transcurrido -->
+<section th:replace="componentes/tiempo :: interceptor"></section>
+
 	
 <div class="container">	
 	<a th:href="@{/form}" class="btn btn-success btn-lg my-3">Volver</a>
