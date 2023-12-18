@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title th:text="${titulo}"></title>
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous">
+
+</head>
+<body>
+
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#">Spring Boot</a>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarNav"
+				aria-controls="navbarNav" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav">
+					<li class="nav-item"><a class="nav-link active"
+						aria-current="page" href="#">Home</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{/listar}">Cliente</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+
+	<div class="container">
+		<h1
+			class="text-secondary border border-success border-top-0 border-left-0 border-right-0"
+			th:text="${titulo}"></h1>
+
+			<!-- Muestra todas las alertas en una lista-->
+			<div th:object="${cliente}" th:remove="tag">
+			<ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+				<li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
+			</ul>
+			</div>
+
+		<form th:action="@{/form}" th:object="${cliente}" method="post">
+			
+				<div class="form-group row"><!-- class="form-group"  con row agregamos la entrada del texto a la para del Nombre -->
+					<label class="col-sm-2 col-form-label">Nombre</label>
+					<div class="col-sm-6">
+						<input type="text" th:field="*{nombre}" class="form-control" th:errorclass="'form-control alert-danger'"/>
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Apellido</label>
+					<div class="col-sm-6">
+						<input type="text" th:field="*{apellido}" class="form-control" th:errorclass="'form-control alert-danger'"/>
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></small>
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Email</label>
+					<div class="col-sm-6">
+						<input type="text" th:field="*{email}" class="form-control" th:errorclass="'form-control alert-danger'"/>
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Fecha</label>
+					<div class="col-sm-6">
+						<input type="text" th:field="*{createAt}" class="form-control" placeholder="yyyy-MM-dd" th:errorclass="'form-control alert-danger'"/>
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('createAt')}" th:errors="*{createAt}"></small>
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<div class="col-sm-6">
+						<input type="submit" value="Crear Cliente" class="btn btn-primary"/>
+					</div>
+				</div>	
+
+			<!-- Este input permite saber si un registro existe si no exite sera creado pero si ya existe permite actualizarlo
+			al no querer utilizar este input: podemos agregar en el clientecontroller marcar @SessionAttributes("cliente") y  al metodo
+			guardar se debe agregar SessionStatus y status.setComplet
+			-->
+			<!--  <input type="hidden" th:field="*{id}"/>  -->
+			
+		</form>
+	</div>
+</body>
+</html>
