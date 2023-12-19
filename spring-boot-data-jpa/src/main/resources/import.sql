@@ -1,2 +1,16 @@
-INSERT INTO clientes (id, nombre, apellido, email, create_at) VALUES(1, 'Gerson', 'Ep', 'ger@gmail.com', '2023-12-17');
-INSERT INTO clientes (id, nombre, apellido, email, create_at) VALUES(2, 'Gabriela', 'Ruiz', 'paoi@gmail.com', '2020-10-16');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Gerson', 'Ep', 'ger@gmail.com', '2023-12-17');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Paola', 'Ruiz', 'paoi@gmail.com', '2020-10-16');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Maria', 'Esste', 'maria@gmail.com', '2022-12-17');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Lucia', 'Ruano', 'lucia@gmail.com', '2021-10-14');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Ana', 'Argus', 'ana@gmail.com', '2023-12-22');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Amada', 'Perez', 'amd@gmail.com', '2019-10-16');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Wilson', 'Estrada', 'wilson@gmail.com', '2017-12-25');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Yoselin', 'Ruano', 'yose@gmail.com', '2015-11-18');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Jasibe', 'Ep', 'jaz@gmail.com', '2019-11-17');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Ann', 'Ruiz', 'ann@gmail.com', '2021-10-18');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('laura', 'Esste', 'laura@gmail.com', '2020-11-19');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Luis', 'Ruano', 'luis@gmail.com', '2021-10-16');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Marin', 'Ep', 'marin@gmail.com', '2023-12-17');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Carlos', 'Ruiz', 'carlosi@gmail.com', '2020-10-16');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('andres', 'Esste', 'andres@gmail.com', '2022-12-17');
+INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Salvador', 'Ruano', 'salvad@gmail.com', '2021-10-16');
