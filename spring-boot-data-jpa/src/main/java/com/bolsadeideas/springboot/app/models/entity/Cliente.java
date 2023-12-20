@@ -46,6 +46,8 @@ public class Cliente implements Serializable {
 	@DateTimeFormat(pattern="yyyy-MM-dd") //Establece el formato a recibir la fecha
 	private Date createAt;
 	
+	private String foto;
+	
 /*
 	//Metodo antes de que se guarde en la BD - Crea la Fecha actual automaticamente
 	@PrePersist
@@ -95,6 +97,17 @@ public class Cliente implements Serializable {
 		this.createAt = createAt;
 	}
 
+	
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+
+	
+	
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
