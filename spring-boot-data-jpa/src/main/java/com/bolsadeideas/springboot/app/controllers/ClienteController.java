@@ -1,20 +1,12 @@
 package com.bolsadeideas.springboot.app.controllers;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
-import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,9 +26,9 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.bolsadeideas.springboot.app.models.dao.IClienteDao;
 import com.bolsadeideas.springboot.app.models.entity.Cliente;
 import com.bolsadeideas.springboot.app.models.service.IClienteService;
+import com.bolsadeideas.springboot.app.models.service.IUploadFileService;
 import com.bolsadeideas.springboot.app.util.paginator.PageRender;
 
 import jakarta.validation.Valid;
@@ -48,31 +40,22 @@ public class ClienteController {
 	@Autowired
 	//@Qualifier("clienteDaoJPA") //para especifiar que IClienteDao utilizar en caso de que hubieran 2
 	//private IClienteDao clienteDao; //Ya no se inyecta el IClienteDao ahora es IClienteService contiene los Daos
-	private IClienteService clienteService;
+	private IClienteService clienteService;	
 	
-	
-	//Un debug para que muestre en consola los nombres de los directorios
-	private final Logger log = LoggerFactory.getLogger(getClass());
-	
-	//Constante para reemplazar la palabra "uploads"
-	private final static String UPLOADS_FOLDER = "uploads";
+	@Autowired
+	public IUploadFileService uploadFileService; //Inyeccion de la interfaz que contiene los metodos de la logica de subida de arhivo(imgs)
 	
 	//Metodo para cargar imagen programaticamente en la respuesta HTTP
 	@GetMapping(value="/uploads/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename){
-		Path pathFoto = Paths.get(UPLOADS_FOLDER).resolve(filename).toAbsolutePath();
-		log.info("pathFoto: " + pathFoto);
 		
+		//Implementacion de metodo (load) para cargar la foto de la interfaz IUploadFileService
 		Resource recurso = null;
 		try {
-			recurso = new UrlResource(pathFoto.toUri());
-			if(!recurso.exists() || !recurso.isReadable()) {
-				throw new RuntimeException("Error: no se puede cargar la imagen: " + pathFoto.toString());
-			}
+			recurso = uploadFileService.load(filename);
 		} catch (MalformedURLException e) {
-	
 			e.printStackTrace();
-		}
+		} 
 		
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
 				.body(recurso);	
@@ -172,52 +155,18 @@ public class ClienteController {
 			if(cliente.getId() != null && cliente.getId() > 0 
 					&& cliente.getFoto() != null && cliente.getFoto().length() > 0 ) {
 				
-				Path rootPath = Paths.get(UPLOADS_FOLDER).resolve(cliente.getFoto()).toAbsolutePath();
-				File archivo = rootPath.toFile();
-				
-				if(archivo.exists() && archivo.canRead()) {
-					archivo.delete();
-				}			
+				uploadFileService.delete(cliente.getFoto());	
 			}
 			
-			
-			//Ruta interna del proyecto no se recomienda guardar imagenes o archivos dentro del proyecto, el proyecto solo debe ser de lectura.
-			//se guarda en la ruta fisica de nuestro proyecto que estamos desarrollando (elcodigo fuente) y no el compilado jar (o war) por lo que se tiene que estar actualizando la carpeta de nuestro proyecto para ver las fotos
-			//Path directorioRecursos = Paths.get("src//main//resources//static/uploads"); //aqui se guardarán las imagenes
-			//String rootPath = directorioRecursos.toFile().getAbsolutePath(); //Obtenemos en string la ruta de las fotos
-			
-			//Ruta externa - separada al proyecto al jar o war (Para guardar las fotos y archivos - Es la forma recomendable)
-			//String rootPath = "C://Temp//uploads"; //Crear la carpeta uploads en esa ruta //En linux la ruta es: "/opt/uploads";
-			
-			
-			//Agregar directorio absoluto y externo en raiz del proyecto: 
-			//Ruta Completa del proyecto: C:/User/Escritorio/spring-boot-data-jpa/uploads
-
-			String uniqueFilename = UUID.randomUUID().toString() + "_" + foto.getOriginalFilename();
-			Path rootPath = Paths.get(UPLOADS_FOLDER).resolve(uniqueFilename); //Crear una nueva foto
-			Path rootAbsolutPath = rootPath.toAbsolutePath();
-			
-			//Un debug para que muestre en consola los nombres de los directorios
-			log.info("rootPath: " + rootPath); //Path relativo al proyecto.
-			log.info("rootAbsolutPath: " + rootAbsolutPath); //Path absoluto: desde disco c hasta el nombre del archivo.
-			
+			String uniqueFilename = null;
 			try {
-/*				//COdigo para Ruta externa al proyecto en disco C o ruta interna dentro del proyecto en carpeta static 
-				byte[] bytes = foto.getBytes();
-				Path rutaCompleta = Paths.get(rootPath + "//" + foto.getOriginalFilename());
-				Files.write(rutaCompleta, bytes);
-				
-				flash.addFlashAttribute("info", "Ha subido correctamente '" + foto.getOriginalFilename()+ "'");			
-				cliente.setFoto(foto.getOriginalFilename()); 	//Pasamos el nombre de la foto del cliente
-*/				
-				//Codigo para directorio absoluto y externo en raiz del proyecto
-				Files.copy(foto.getInputStream(), rootAbsolutPath);
-				flash.addFlashAttribute("info", "Ha subido correctamente '" + uniqueFilename + "'");
-				cliente.setFoto(uniqueFilename); 	//Pasamos el nombre de la foto del cliente
-							
+				uniqueFilename = uploadFileService.copy(foto);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
+			flash.addFlashAttribute("info", "Ha subido correctamente '" + uniqueFilename + "'");
+			cliente.setFoto(uniqueFilename); 	//Pasamos el nombre de la foto del cliente
 		}
 		
 		String mensajeFlash = (cliente.getId() != null)? "Cliente editado con exito!" : "Cliente creado con éxito!"; //Valida si el id ya existe entonces el registro se edita si no se crea el registro.
@@ -239,14 +188,10 @@ public class ClienteController {
 			flash.addFlashAttribute("success", "Cliente eliminado con exito!"); //muestra una notificacion al eliminar un registro
 		
 			//Eliminar archivo de imagen cuando se elimina el cliente
-			Path rootPath = Paths.get(UPLOADS_FOLDER).resolve(cliente.getFoto()).toAbsolutePath();
-			File archivo = rootPath.toFile();
-			
-			if(archivo.exists() && archivo.canRead()) {
-				if(archivo.delete()) {
+
+				if(uploadFileService.delete(cliente.getFoto())) {
 					flash.addFlashAttribute("info", "Foto " + cliente.getFoto() + " eliminado con exito!");
 				}
-			}
 		}
 		return "redirect:/listar";
 	}
