@@ -17,7 +17,16 @@ public interface IUploadFileService {
 	
 	public boolean delete(String filename);
 	
+	//Metodos al ejecutar la app se crea el directorio uploads y  al parar la app borra la carpeta uploads con las imagenes
+	//Estos metodos se implementa en la clase UploadFileServiceImpl y la config se hace en SpringBootDataJpaApplication
+	
+	public void deleteAll();
+	
+	public void init() throws IOException;
+	
 }
+
+
 
 
 
