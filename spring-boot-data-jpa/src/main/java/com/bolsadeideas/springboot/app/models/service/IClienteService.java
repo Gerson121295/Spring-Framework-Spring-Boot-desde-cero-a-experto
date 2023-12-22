@@ -39,6 +39,12 @@ public interface IClienteService {
 	
 	public void deleteFactura(Long id);
 	
+	//Optimizando consultas JPQL en Facturas JOIN FETCH para obtener los items
+	public Factura fetchByIdWithClienteWithItemFacturaWithProducto(Long id);
+	
+	//Optimizando consultas JPQL en Clientes con JOIN FETCH para obtener las facturas.
+	public Cliente fetchByIdWithFacturas(Long id);
+	
 }
 
 

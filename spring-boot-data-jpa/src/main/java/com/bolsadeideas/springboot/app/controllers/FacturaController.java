@@ -41,8 +41,13 @@ public class FacturaController {
 	public String ver(@PathVariable(value="id") Long id,
 			Model model,
 			RedirectAttributes flash) {
-		Factura factura = clienteService.findFacturaById(id); //obtener la factura por el id
+		
+		//Consultas JPQL en Facturas No optimizado realiza 7 consultas
+		//Factura factura = clienteService.findFacturaById(id); //obtener la factura por el id
 			
+		//Optimizando consultas JPQL en Facturas JOIN FETCH para obtener los items: Solo hace 1 consulta, al no optimizarlo realiza 7 consultas por lo que afecta el rendimiento
+		Factura factura = clienteService.fetchByIdWithClienteWithItemFacturaWithProducto(id);
+		
 		if(factura == null ) {//Valida si la factura es null, si es vacia manda un mensaje al usuario
 			flash.addFlashAttribute("error", "La factura no existe en la BD");	//envia una notificacion de error
 			return "redirect:/listar"; //si no existe la factura hace un redirect a la ruta de listar
@@ -64,6 +69,7 @@ public class FacturaController {
 			RedirectAttributes flash) { //RedirectAttributes para mostrar mensajes
 		
 		Cliente cliente = clienteService.findOne(clienteId); //Obtenemos el cliente por el id y se guarda en cliente
+				
 		if(cliente == null) {
 			flash.addFlashAttribute("error", "El cliente no existe en la BD"); //Mostramos el mensaje de error
 			return "redirect:/listar"; //Si el cliente es nulo redirigimos a la ruta listar

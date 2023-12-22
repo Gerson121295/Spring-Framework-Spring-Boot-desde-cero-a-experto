@@ -1,6 +1,7 @@
 package com.bolsadeideas.springboot.app.models.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import com.bolsadeideas.springboot.app.models.entity.Cliente;
@@ -23,7 +24,13 @@ Tenemos 2 soluciones:
 
 public interface IClienteDao extends JpaRepository<Cliente, Long>{
 	
+	//Optimizando consultas JPQL en Clientes con JOIN FETCH para obtener las facturas.  - Este metodo realiza 1 consulta, sin este metodo el anterior realiza 2 consultas.
+	@Query("select c from Cliente c left join fetch c.facturas f where c.id=?1") //@uery permite crear una consulta JPA optimizada
+	//join el cliente debe tener factura de lo contrario aparecera que no existe en la BD
+	//Agregar left join el cliente no es necesario que tenga facturas
+	public Cliente fetchByIdWithFacturas(Long id);
 }
+
 
 
 /*

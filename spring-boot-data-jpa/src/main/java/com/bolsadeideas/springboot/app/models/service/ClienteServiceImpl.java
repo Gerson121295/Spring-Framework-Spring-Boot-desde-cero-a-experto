@@ -47,12 +47,21 @@ public class ClienteServiceImpl implements IClienteService {
 		clienteDao.save(cliente);
 	}
 
+	//Metodo no optimizado Realiza 2 consultas
 	@Override
 	@Transactional(readOnly=true)
 	public Cliente findOne(Long id) {	
 		return clienteDao.findById(id).orElse(null);  //si encuentra retorna el objeto sino retorna null //utilizando forma 1 DAO: return clienteDao.findOne(id);
 	}
 
+	//Optimizando consultas JPQL en Clientes con JOIN FETCH para obtener las facturas.  - Este metodo realiza 1 consulta
+	@Override
+	@Transactional(readOnly=true) 
+	public Cliente fetchByIdWithFacturas(Long id) {
+		return clienteDao.fetchByIdWithFacturas(id);
+	}
+	
+	
 	@Override
 	@Transactional
 	public void delete(Long id) {
@@ -107,6 +116,16 @@ public class ClienteServiceImpl implements IClienteService {
 		facturaDao.deleteById(id);	
 	}
 
+	//Optimizando consultas JPQL en Facturas JOIN FETCH para obtener los items
+	@Override
+	@Transactional(readOnly=true) 
+	public Factura fetchByIdWithClienteWithItemFacturaWithProducto(Long id) {
+		return facturaDao.fetchByIdWithClienteWithItemFacturaWithProducto(id);
+	}
+
+
+
+	
 }
 
 

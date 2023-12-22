@@ -66,7 +66,12 @@ public class ClienteController {
 	@GetMapping(value="/ver/{id}")
 	public String ver(@PathVariable(value="id") Long id, Map<String, Object> model, RedirectAttributes flash) {
 		
-		Cliente cliente = clienteService.findOne(id); //Obtenemos el cliente
+		//El metodo findOne NO optimizado realiza 2 consultas
+		//Cliente cliente = clienteService.findOne(id); //Obtenemos el cliente
+		
+		//Metodo Optimizado consultas JPQL en Clientes con JOIN FETCH para obtener las facturas. - Este metodo realiza 1 consulta
+		Cliente cliente = clienteService.fetchByIdWithFacturas(id); //Obtenemos el cliente
+		
 		if(cliente == null) {
 			flash.addFlashAttribute("error", "El cliente no existe en la BD");
 			return "redirect:/listar";
