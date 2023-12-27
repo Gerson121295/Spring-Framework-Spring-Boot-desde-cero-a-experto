@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -32,6 +33,13 @@ public class MvcConfig implements WebMvcConfigurer{
 		registry.addResourceHandler("/uploads/**").addResourceLocations(resourcePath);		
 	}
 */	
+	
+	
+	//Metodo para registrar un controlador de vista un ViewController - Para mostrar la vista 404 a usuarios que no tengan permiso para ver una ruta
+	
+	public void addViewControllers(ViewControllerRegistry registry) {
+		registry.addViewController("/error_403").setViewName("error_403"); //"error_403" es la Vista a mostrar 
+	}
 	
 }
 

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,6 +28,9 @@ import com.bolsadeideas.springboot.app.models.service.IClienteService;
 
 import jakarta.validation.Valid;
 
+
+@Secured("ROLE_ADMIN") //Agregar seguridad en el controlador usando anotaciones @Secured SOLO LOS usuarios con rol  ROLE_ADMIN pueden acceder. 
+//Al agregar esta notacion aqui automaticamente todos los metodos de FacturaController SOLO LOS usuarios con rol ROLE_ADMIN pueden acceder.
 @Controller
 @RequestMapping("/factura")
 @SessionAttributes("factura") //Importante mantener el objeto factura en una sesion mientras se procesa el formulario hasta que se envie al metodo guardar el metodo guardar procesa 
