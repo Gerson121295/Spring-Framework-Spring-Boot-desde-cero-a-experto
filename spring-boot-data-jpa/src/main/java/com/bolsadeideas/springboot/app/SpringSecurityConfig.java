@@ -21,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.bolsadeideas.springboot.app.auth.handler.LoginSuccesHandler;
+import com.bolsadeideas.springboot.app.models.service.JpaUserDetailsService;
 
 @Configuration
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true) //Agregar seguridad en el controlador usando anotaciones @Secured o @PreAuthorize
@@ -40,9 +41,13 @@ public class SpringSecurityConfig {
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder; //Encriptar la contraseña
 	
-	 @Autowired
-	 private DataSource dataSource; //Para la conexion a la BD
+	 //@Autowired
+	 //private DataSource dataSource; //Para la conexion a la BD usando JDBC
 	 
+	 
+	 //Implementacion para autenticacion con JPA
+	 @Autowired
+     private JpaUserDetailsService userDetailService;
 	 
 	 
 	//Creacion de usuario Local - Memory authentication
@@ -68,7 +73,8 @@ public class SpringSecurityConfig {
 */
 	 
 		//Code Profe: Spring Security - Autenticacion JDBC usando BD las tablas users y authorities ya fueron creadas y relacionadas
-/*	 @SuppressWarnings("removal") 	
+	 	//(Metodo no funciona cuando la contraseña no es la correcta, solo cuando es la correcta)
+	 /*	 @SuppressWarnings("removal") 	
 	 @Bean
 	    AuthenticationManager authManager(HttpSecurity http) throws Exception{
 	        return 	http.getSharedObject(AuthenticationManagerBuilder.class)
@@ -82,8 +88,9 @@ public class SpringSecurityConfig {
 */
 
 	 
-		//Spring Security - Autenticacion JDBC usando BD las tablas users y authorities ya fueron creadas y relacionadas
-	@Bean
+		//Spring Security - Autenticacion JDBC(funciona correctamente) usando BD las tablas users y authorities ya fueron creadas y relacionadas
+/*
+	 @Bean
 	public UserDetailsService userDetailsService(AuthenticationManagerBuilder build) throws Exception {
 	
 		build.jdbcAuthentication()
@@ -94,9 +101,52 @@ public class SpringSecurityConfig {
 						"select u.username, a.authority from authorities a inner join users u on (a.user_id=u.id) where u.username=?");
 			return build.getDefaultUserDetailsService();
 	}
-
+*/
+	
+/*	//para la Autenticacion JDBC se creo las Tablas y registros en la BD usando MySQL Workbeanch
+	  
+-- Tabla usuarios
+CREATE TABLE `db_springboot`.`users` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(60) NOT NULL,
+  `enabled` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE);
+  
+  CREATE TABLE `db_springboot`.`authorities` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `authority` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `user_id_authority_unique` (`user_id` ASC, `authority` ASC) VISIBLE,
+  CONSTRAINT `fk_authorities_users`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `db_springboot`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+    
+    -- Insersion de usuarios
+   INSERT INTO users (username, password, enabled) VALUES('gerson', '$2a$10$QEZXlbeOUtHrYI6jnDkSjefZFr8mZ3bHq/8G8cnhQoaC9.Qmv.VDW',1);
+   INSERT INTO users (username, password, enabled) VALUES('admin', '$2a$10$6fje4Hfy1CO9UeLd1.K8luOv8EEiL0.bkO8hhNZKXx6TqCYBS64U.',1);
+    
+    -- Insersion de Roles
+    INSERT INTO authorities (user_id, authority) VALUES(1, 'ROLE_USER'); -- USUARIO: GERSON
+    INSERT INTO authorities (user_id, authority) VALUES(2, 'ROLE_USER'); -- USUARIO: ADMIN
+    INSERT INTO authorities (user_id, authority) VALUES(2, 'ROLE_ADMIN'); -- USUARIO: ADMIN
+ */
+	
+	
 	 
-
+	//Spring Security - Autenticacion con JPA - Se crearion las Clases Usuario y Role y se agregaron las relaciones 
+	
+    @Autowired
+    public void userDetailsService(AuthenticationManagerBuilder build) throws Exception {
+       build.userDetailsService(userDetailService)
+       .passwordEncoder(passwordEncoder);
+    }
+	
+    
 	 
 
 	// Autorizacion a Rutas  ACL 

@@ -36,3 +36,16 @@ INSERT INTO facturas (descripcion, observacion, cliente_id, create_at) VALUES('F
 INSERT INTO facturas_items (cantidad, factura_id, producto_id) VALUES(3,2,6);
 
 
+  -- Insersion de usuarios
+INSERT INTO usuarios (username, password, enabled) VALUES('gerson', '$2a$10$QEZXlbeOUtHrYI6jnDkSjefZFr8mZ3bHq/8G8cnhQoaC9.Qmv.VDW',1);
+INSERT INTO usuarios (username, password, enabled) VALUES('admin', '$2a$10$6fje4Hfy1CO9UeLd1.K8luOv8EEiL0.bkO8hhNZKXx6TqCYBS64U.',1);
+    
+  -- Insersion de Roles
+INSERT INTO authorities (user_id, authority) VALUES(1, 'ROLE_USER'); -- USUARIO: GERSON
+INSERT INTO authorities (user_id, authority) VALUES(2, 'ROLE_USER'); -- USUARIO: ADMIN
+INSERT INTO authorities (user_id, authority) VALUES(2, 'ROLE_ADMIN'); -- USUARIO: ADMIN
+    
+    
+    
+    
+
