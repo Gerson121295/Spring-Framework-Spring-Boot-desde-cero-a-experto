@@ -1,15 +1,22 @@
 package com.bolsadeideas.springboot.app;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -23,33 +30,75 @@ public class SpringSecurityConfig {
 	@Autowired
 	private LoginSuccesHandler successHandler;
 
+/*	//movemos este metodo BCryptPasswordEncoder a la clase MvcConfig
 	@Bean
 	public static BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
+*/
+	//Inyeccion del metodo BCryptPasswordEncoder de MvcConfig
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder; //Encriptar la contraseña
 	
-	//Creacion de usuario
-	@Bean
+	 @Autowired
+	 private DataSource dataSource; //Para la conexion a la BD
+	 
+	 
+	 
+	//Creacion de usuario Local - Memory authentication
+/*	@Bean
 	public UserDetailsService userDetailsService() throws Exception {
 
 		InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
 
 		manager.createUser(User
 				.withUsername("gerson")
-				.password(passwordEncoder().encode("123"))
+				//.password(passwordEncoder().encode("123"))  // metodo BCryptPasswordEncoder en esta clase
+				.password(this.passwordEncoder.encode("123")) // metodo BCryptPasswordEncoder en la clase MvcConfig
 				.roles("USER").build());
 
 		manager.createUser(
 				User.withUsername("admin")
-				.password(passwordEncoder().encode("123"))
+				//.password(passwordEncoder().encode("123"))
+				.password(this.passwordEncoder.encode("123"))
 				.roles("ADMIN", "USER").build());
 
 		return manager;
+	}
+*/
+	 
+		//Code Profe: Spring Security - Autenticacion JDBC usando BD las tablas users y authorities ya fueron creadas y relacionadas
+/*	 @SuppressWarnings("removal") 	
+	 @Bean
+	    AuthenticationManager authManager(HttpSecurity http) throws Exception{
+	        return 	http.getSharedObject(AuthenticationManagerBuilder.class)
+	                .jdbcAuthentication()
+	                .dataSource(dataSource)
+	                .passwordEncoder(passwordEncoder)
+	                .usersByUsernameQuery("select username, password, enabled from users where username=?") //valida si el usuario y password es igual al que se envia en el formulario al de la BD
+	                .authoritiesByUsernameQuery("select u.username, a.authority from authorities a inner join users u on (a.user_id=u.id) where u.username=?")
+	                .and().build();            
+	    }
+*/
 
+	 
+		//Spring Security - Autenticacion JDBC usando BD las tablas users y authorities ya fueron creadas y relacionadas
+	@Bean
+	public UserDetailsService userDetailsService(AuthenticationManagerBuilder build) throws Exception {
+	
+		build.jdbcAuthentication()
+				.dataSource(dataSource)
+				.passwordEncoder(passwordEncoder)
+				.usersByUsernameQuery("select username, password, enabled from users where username=?")
+				.authoritiesByUsernameQuery(
+						"select u.username, a.authority from authorities a inner join users u on (a.user_id=u.id) where u.username=?");
+			return build.getDefaultUserDetailsService();
 	}
 
-	
+	 
+
+	 
+
 	// Autorizacion a Rutas  ACL 
 		@Bean
 		public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -90,9 +139,6 @@ public class SpringSecurityConfig {
 
 
 	
-
-	
-		
 	
 /*	// Code instructor
     @Bean

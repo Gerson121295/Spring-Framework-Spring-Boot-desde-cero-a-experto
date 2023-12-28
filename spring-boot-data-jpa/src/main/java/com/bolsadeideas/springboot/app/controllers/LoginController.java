@@ -33,3 +33,25 @@ public class LoginController {
 	}
 
 }
+
+
+/*
+  
+ -- Forma para crear un usuairos con contraseñas se envian por el formulario de registro de usuarios 
+ (el proceso de encriptar la contraseña al momento de guardarla)
+ 
+-- La inyectas en el controlador:
+
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	
+-- Luego ya la puedes encriptar en algún método del controlador @PostMapping:
+
+	String password = usuario.getPassword();
+	String bcryptPassword = passwordEncoder.encode(password);
+	usuario.setPassword(bcryptPassword);
+ 
+ */
+
+
+
