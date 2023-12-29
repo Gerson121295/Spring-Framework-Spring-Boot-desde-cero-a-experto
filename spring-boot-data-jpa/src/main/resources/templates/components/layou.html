@@ -74,7 +74,7 @@ la carpeta descargada y copiar y pegar los archivos: jquery-ui.min.css y jquery-
       	 <!-- Otro diseño alternativo: Menú desplegable para seleccionar el idioma -->
       	 <li class="nav-item dropdown show mx-2"> 
       	 	<a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" id="dropdownLenguaje" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    			<span th:text="#{text.locale.language}"></span>
+    			<span th:utext="#{text.locale.language}"></span>
   			</a>
   			<div class="dropdown-menu">
   				<a class="dropdown-item" th:href="@{/locale(lang=es_ES)}" th:text="#{text.locale.es}">ES</a>
