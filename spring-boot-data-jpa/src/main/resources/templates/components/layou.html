@@ -65,11 +65,23 @@ la carpeta descargada y copiar y pegar los archivos: jquery-ui.min.css y jquery-
        </ul>
 -->
       
-       <!-- Forma 2: Menú para cambiar idioma al sitio web -  Usando el LocaleController  -->
+       <!-- Forma 2: Menú Botones Horizontal para cambiar idioma al sitio web -  Usando el LocaleController  -->
       <ul class="navbar-nav d-flex ms-auto mx-4">
       	 <li class="nav-item mx-1"><a class="btn btn-outline-success" th:href="@{/locale(lang=es_ES)}">ES</a></li> 
       	 <li class="nav-item mx-1"><a class="btn btn-outline-success" th:href="@{/locale(lang=en_US)}">EN</a></li> 
       	 <li class="nav-item mx-1"><a class="btn btn-outline-success" th:href="@{/locale(lang=de_DE)}">DE</a></li> 
+      	 
+      	 <!-- Otro diseño alternativo: Menú desplegable para seleccionar el idioma -->
+      	 <li class="nav-item dropdown show mx-2"> 
+      	 	<a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" id="dropdownLenguaje" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    			<span th:text="#{text.locale.language}"></span>
+  			</a>
+  			<div class="dropdown-menu">
+  				<a class="dropdown-item" th:href="@{/locale(lang=es_ES)}" th:text="#{text.locale.es}">ES</a>
+  				<a class="dropdown-item" th:href="@{/locale(lang=en_US)}" th:text="#{text.locale.en}">EN</a>
+  				<a class="dropdown-item" th:href="@{/locale(lang=de_DE)}" th:text="#{text.locale.de}">DE</a>
+  			</div>
+      	 </li>
        </ul>
       
       

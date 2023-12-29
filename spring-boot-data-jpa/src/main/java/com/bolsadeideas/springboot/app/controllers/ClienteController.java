@@ -3,11 +3,13 @@ package com.bolsadeideas.springboot.app.controllers;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,7 +58,11 @@ public class ClienteController {
 	private IClienteService clienteService;	
 	
 	@Autowired
-	public IUploadFileService uploadFileService; //Inyeccion de la interfaz que contiene los metodos de la logica de subida de arhivo(imgs)
+	private IUploadFileService uploadFileService; //Inyeccion de la interfaz que contiene los metodos de la logica de subida de arhivo(imgs)
+	
+	@Autowired
+	private MessageSource messageSource; //para agregar los textos de archivos messages_codigoIdioma.properties para las traducciones de titulos de los metodos del controlador
+	
 	
 	//Metodo para cargar imagen programaticamente en la respuesta HTTP
 	//@Secured({"ROLE_USER","ROLE_ADMIN"}) //Agregar seguridad en el controlador usando anotaciones @Secured SOLO LOS usuarios con rol  ROLE_USER y ROLE_ADMIN pueden acceder
@@ -112,7 +118,8 @@ public class ClienteController {
 	@RequestMapping(value= {"/listar", "/"}, method=RequestMethod.GET)
 	public String listar(@RequestParam(name="page", defaultValue="0") int page, Model model, //por default estará en la pagina 0
 			Authentication authentication,  //valida la autenticacion del usuario
-			HttpServletRequest request ) { //chequea autorizacion con securityContextHolderAware
+			HttpServletRequest request,  //chequea autorizacion con securityContextHolderAware
+			Locale locale) { //locale para las traducciones
 		
 		if(authentication != null) { //validar si la autenticacion no es null
 			logger.info("Hola usuario autenticado, tu username es: ".concat(authentication.getName()));
@@ -153,7 +160,9 @@ public class ClienteController {
 		
 		PageRender<Cliente>	pageRender = new PageRender<>("/listar", clientes); //Pasamos cliente a nuestro PageRender quien hace los calculos de las paginas
 		
-		model.addAttribute("titulo", "Listado de clientes");
+		//model.addAttribute("titulo", "Listado de clientes"); //Los titulos No traducido a otro idioma 
+		model.addAttribute("titulo", messageSource.getMessage("text.cliente.listar.titulo", null, locale)); //Los titulos traducido a otro idioma los archivos messages_CODE.properties tienen la traduccion
+		
 		model.addAttribute("clientes", clientes);//ahora en lugar clienteService se agrega clientes que ya trae la paginacion
 		
 		model.addAttribute("page", pageRender);//Pasamos el pageRender a la vista
