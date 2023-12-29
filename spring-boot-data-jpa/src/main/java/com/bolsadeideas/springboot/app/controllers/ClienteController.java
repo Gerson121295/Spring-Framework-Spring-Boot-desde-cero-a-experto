@@ -86,7 +86,7 @@ public class ClienteController {
 	//Metodo para ver el detalle del cliente por medio del id
 	@PreAuthorize("hasAnyRole('ROLE_USER')") //@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")  - Agregar seguridad en el controlador usando anotaciones @PreAuthorize SOLO LOS usuarios con rol  ROLE_USER pueden acceder
 	@GetMapping(value="/ver/{id}")
-	public String ver(@PathVariable(value="id") Long id, Map<String, Object> model, RedirectAttributes flash) {
+	public String ver(@PathVariable(value="id") Long id, Map<String, Object> model, RedirectAttributes flash, Locale locale) {
 		
 		//El metodo findOne NO optimizado realiza 2 consultas
 		//Cliente cliente = clienteService.findOne(id); //Obtenemos el cliente
@@ -95,12 +95,16 @@ public class ClienteController {
 		Cliente cliente = clienteService.fetchByIdWithFacturas(id); //Obtenemos el cliente
 		
 		if(cliente == null) {
-			flash.addFlashAttribute("error", "El cliente no existe en la BD");
+			//flash.addFlashAttribute("error", "El cliente no existe en la BD");
+			flash.addFlashAttribute("error", messageSource.getMessage("text.cliente.flash.db.error", null, locale));
 			return "redirect:/listar";
 		}
 		
 		model.put("cliente", cliente); //Pasamos a la vista
-		model.put("titulo", "Detalle cliente: " + cliente.getNombre());
+		//model.put("titulo", "Detalle cliente: " + cliente.getNombre());
+		//model.put("titulo", messageSource.getMessage("text.cliente.detalle.titulo", null, locale));
+		model.put("titulo", messageSource.getMessage("text.cliente.detalle.titulo", null, locale).concat(": ").concat(cliente.getNombre()));
+		
 		return "ver";
 	}
 	
@@ -173,34 +177,38 @@ public class ClienteController {
 	//Metodo para insertar un nuevo registro - Utiliza otra forma para pasar la data a la vista
 	@PreAuthorize("hasRole('ROLE_ADMIN')") //Agregar seguridad en el controlador usando anotaciones @PreAuthorize SOLO LOS usuarios con rol  ROLE_ADMIN pueden acceder
 	@RequestMapping(value="/form")
-	public String crear(Map<String, Object> model) {  //en lugar de Model model se uso Map
+	public String crear(Map<String, Object> model, Locale locale) {  //en lugar de Model model se uso Map
 		
 		Cliente cliente = new Cliente(); //Se instancia el cliente
 		model.put("cliente", cliente);//En lugar de addAttribute se utilizo put para pasar la data a la vista
-		model.put("titulo", "Formulario del cliente");
+		//model.put("titulo", "Formulario del cliente");
+		model.put("titulo", messageSource.getMessage("text.cliente.form.titulo.crear", null, locale));
 		return "form";
 	}
 	
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')") //Agregar seguridad en el controlador usando anotaciones @PreAuthorize SOLO LOS usuarios con rol  ROLE_ADMIN pueden acceder
 	@RequestMapping(value="/form/{id}")
-	public String editar(@PathVariable(value="id")Long id, Map<String, Object> model, RedirectAttributes flash){
+	public String editar(@PathVariable(value="id")Long id, Map<String, Object> model, RedirectAttributes flash, Locale locale){
 		
 		Cliente cliente = null;
 		
 		if(id > 0) {
 			cliente = clienteService.findOne(id); //ahora en lugar de clienteDao es clienteService
 			if(cliente == null) {
-			flash.addFlashAttribute("error", "El ID del cliente no existe en la BD!"); //muestra notificacion al editar un registro
-			return "redirect:/listar";	
+			//flash.addFlashAttribute("error", "El ID del cliente no existe en la BD!"); //muestra notificacion al editar un registro
+				flash.addFlashAttribute("error", messageSource.getMessage("text.cliente.flash.db.error", null, locale));				
+				return "redirect:/listar";	
 			}
 		} else {
-			flash.addFlashAttribute("error", "El ID del cliente no puede ser cero!"); //muestra notificacion al editar un registro
+			//flash.addFlashAttribute("error", "El ID del cliente no puede ser cero!"); //muestra notificacion al editar un registro
+			flash.addFlashAttribute("error", messageSource.getMessage("text.cliente.flash.id.error", null, locale));
 			return "redirect:/listar";
 		}
 		
 		model.put("cliente", cliente);
-		model.put("titulo", "Editar Cliente");
+		//model.put("titulo", "Editar Cliente");
+		model.put("titulo", messageSource.getMessage("text.cliente.form.titulo.editar", null, locale));
 		return "form";	
 	}
 	
@@ -208,12 +216,13 @@ public class ClienteController {
 	@Secured("ROLE_ADMIN") //Agregar seguridad en el controlador usando anotaciones @Secured SOLO LOS usuarios con rol  ROLE_ADMIN pueden acceder.
 	@RequestMapping(value="/form", method=RequestMethod.POST)
 	public String guardar(@Valid @ModelAttribute("cliente") Cliente cliente, BindingResult result, Model model, 
-			@RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) { //@Valid y BindingResult - Valida los campos que se ingresen en los campos del cliente
+			@RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status, Locale locale) { //@Valid y BindingResult - Valida los campos que se ingresen en los campos del cliente
 		//el parametro @ModelAttribute("cliente") define el nombre de la vista a la que se pasara los datos, pero si La clase Cliente se llama igual que la vista cliente no es necesario agregar el @ModelAttribute("cliente")
 		//Sessionstatus se agrega debido a la anotacion @SessionAttributes("cliente")
 		//RedirectAttributes flash permite mostrar una notificacion al crear un registro
 		if(result.hasErrors()) {//si result tiene errores
-			model.addAttribute("titulo", "Formulario del Cliente");
+			//model.addAttribute("titulo", "Formulario del Cliente");
+			model.addAttribute("titulo", messageSource.getMessage("text.cliente.form.titulo", null, locale));
 			return "form";
 		}
 		
@@ -234,12 +243,14 @@ public class ClienteController {
 				e.printStackTrace();
 			}
 			
-			flash.addFlashAttribute("info", "Ha subido correctamente '" + uniqueFilename + "'");
+			//flash.addFlashAttribute("info", "Ha subido correctamente '" + uniqueFilename + "'");
+			flash.addFlashAttribute("info", messageSource.getMessage("text.cliente.flash.foto.subir.success", null, locale) + "'" + uniqueFilename + "'");
 			cliente.setFoto(uniqueFilename); 	//Pasamos el nombre de la foto del cliente
 		}
 		
-		String mensajeFlash = (cliente.getId() != null)? "Cliente editado con exito!" : "Cliente creado con éxito!"; //Valida si el id ya existe entonces el registro se edita si no se crea el registro.
-		
+		//String mensajeFlash = (cliente.getId() != null)? "Cliente editado con exito!" : "Cliente creado con éxito!"; //Valida si el id ya existe entonces el registro se edita si no se crea el registro.
+		String mensajeFlash = (cliente.getId() != null) ? messageSource.getMessage("text.cliente.flash.editar.success", null, locale) : messageSource.getMessage("text.cliente.flash.crear.success", null, locale);
+
 		clienteService.save(cliente); //Utiliza el metodo save y se le envia el cliente a guardar //ahora en lugar de clienteDao es clienteService
 		status.setComplete(); //Se destruye la sesion. 
 		flash.addFlashAttribute("success", mensajeFlash); //muestra una notificacion al crear un registro
@@ -249,18 +260,21 @@ public class ClienteController {
 	
 	@Secured("ROLE_ADMIN") //Agregar seguridad en el controlador usando anotaciones @Secured SOLO LOS usuarios con rol  ROLE_ADMIN pueden acceder.
 	@RequestMapping(value="/eliminar/{id}")
-	public String eliminar(@PathVariable(value="id")Long id, RedirectAttributes flash) {
+	public String eliminar(@PathVariable(value="id")Long id, RedirectAttributes flash, Locale locale) {
 		if(id > 0) {
 			
 			Cliente cliente = clienteService.findOne(id); //Eliminar archivo de imagen
 			
 			clienteService.delete(id); //ahora en lugar de clienteDao es clienteService
-			flash.addFlashAttribute("success", "Cliente eliminado con exito!"); //muestra una notificacion al eliminar un registro
-		
+			//flash.addFlashAttribute("success", "Cliente eliminado con exito!"); //muestra una notificacion al eliminar un registro
+			flash.addFlashAttribute("success", messageSource.getMessage("text.cliente.flash.eliminar.success", null, locale));
+
 			//Eliminar archivo de imagen cuando se elimina el cliente
 
 				if(uploadFileService.delete(cliente.getFoto())) {
-					flash.addFlashAttribute("info", "Foto " + cliente.getFoto() + " eliminado con exito!");
+					//flash.addFlashAttribute("info", "Foto " + cliente.getFoto() + " eliminado con exito!");
+					String mensajeFotoEliminar = String.format(messageSource.getMessage("text.cliente.flash.foto.eliminar.success", null, locale), cliente.getFoto());
+					flash.addFlashAttribute("info", mensajeFotoEliminar);
 				}
 		}
 		return "redirect:/listar";
