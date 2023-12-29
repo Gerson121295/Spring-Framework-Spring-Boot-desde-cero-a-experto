@@ -56,12 +56,22 @@ la carpeta descargada y copiar y pegar los archivos: jquery-ui.min.css y jquery-
 		</li>     	
       </ul>
       
-      <!-- Menú para cambiar idioma al sitio web -->
+      <!-- Forma 1: Menú para cambiar idioma al sitio web -->
+<!-- 
       <ul class="navbar-nav d-flex ms-auto mx-4">
       	 <li class="nav-item mx-1"><a class="btn btn-outline-success" href="?lang=es_ES">ES</a></li> 
       	 <li class="nav-item mx-1"><a class="btn btn-outline-success" href="?lang=en_US">EN</a></li> 
       	 <li class="nav-item mx-1"><a class="btn btn-outline-success" href="?lang=de_DE">DE</a></li> 
        </ul>
+-->
+      
+       <!-- Forma 2: Menú para cambiar idioma al sitio web -  Usando el LocaleController  -->
+      <ul class="navbar-nav d-flex ms-auto mx-4">
+      	 <li class="nav-item mx-1"><a class="btn btn-outline-success" th:href="@{/locale(lang=es_ES)}">ES</a></li> 
+      	 <li class="nav-item mx-1"><a class="btn btn-outline-success" th:href="@{/locale(lang=en_US)}">EN</a></li> 
+      	 <li class="nav-item mx-1"><a class="btn btn-outline-success" th:href="@{/locale(lang=de_DE)}">DE</a></li> 
+       </ul>
+      
       
     </div>
 </nav>
