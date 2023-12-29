@@ -15,11 +15,21 @@
 	<table class="table table-striped">
 		<thead>
 			<tr>
-				<th sec:authorize="hasRole('ROLE_ADMIN')">Id</th>
+				<th th:text="#{text.cliente.id}" sec:authorize="hasRole('ROLE_USER')">Id</th>
+				<!--  
 				<th>Nombre</th>
 				<th>Apellido</th>
 				<th>Email</th>
 				<th>Fecha</th>
+				-->
+				
+				<!-- De esta forma se configura para poder cambiar de idioma el nombre del campo (Idioma configurado en archivos messages_(idioma).properties --> 
+				<th th:text="#{text.cliente.nombre}">Nombre</th>
+				<th th:text="#{text.cliente.apellido}">Apellido</th>
+				<th th:text="#{text.cliente.email}">Email</th>
+				<th th:text="#{text.cliente.createAt}">Fecha</th>
+				
+				
 				<th sec:authorize="hasRole('ROLE_ADMIN')">Crear Factura</th>
 				<th sec:authorize="hasRole('ROLE_ADMIN')">Editar</th>
 				<th sec:authorize="hasRole('ROLE_ADMIN')">Eliminar</th>
