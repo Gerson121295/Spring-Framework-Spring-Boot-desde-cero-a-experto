@@ -84,6 +84,27 @@
 		  <version>1.3.35</version>
 		</dependency>
 		
+		<!-- Exporta a Excel - Trabaja con todo de Microsoft https://poi.apache.org/  
+		Ejemplos clic en examples: https://poi.apache.org/components/spreadsheet/index.html -->
+		 <dependency>
+	        <groupId>org.apache.poi</groupId>
+	        <artifactId>poi-ooxml</artifactId>
+	        <version>4.1.2</version>
+   		 </dependency>
+    
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml-schemas</artifactId>
+		    <version>4.1.2</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-scratchpad</artifactId>
+		    <version>5.2.2</version>
+		</dependency>
+		
+		
 	</dependencies>
 
 	<build>
