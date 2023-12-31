@@ -15,6 +15,7 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name="productos")
+//@JsonIgnoreProperties({"hibernateLazyInitializer","handler"}) //Se agrego @JsonIgnoreProperties para  Ignorar algunos atributos o propiedades en el JSON, esta anotacion sustituye fetch=FetchType.LAZY en ItemFactura agregar a la relacion como //EAGER: trae los productos rapidamente.
 public class Producto implements Serializable {
 	
 	private static final long serialVersionUID = 1L; //Como se implementa Serializable

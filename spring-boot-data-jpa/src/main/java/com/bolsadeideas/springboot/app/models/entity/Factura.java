@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,6 +45,7 @@ public class Factura implements Serializable {
 	 //Relacion muchas(Many) facturas para(To) un cliente(One). 
 	//La clase factura puede tener un solo cliente. y Un cliente puede tener muchas facturas
 	@ManyToOne(fetch=FetchType.LAZY) //LAZY carga perezosa solo trae la consulta cuando se llama, EAGER trae todo
+	@JsonBackReference //No queremos mostrar en nuestro JSON se omite en la serializacion. //exportar a JSON
 	private Cliente cliente; //Factura tendra un cliente. //automaticamente se crea un campo cliente_id en la tabla factura que es la llave foranea que relaciona Factura con clientes
 
 	//Relacion de Factura con ItemFactura
@@ -105,7 +108,7 @@ public class Factura implements Serializable {
 		this.createAt = createAt;
 	}
 
-	@XmlTransient //Sig que cuando se serializa no va a llamar a este metodo. //@XmlTransient omite este atributo en la Serializacion, no lo incluye en el XML
+	@XmlTransient //Sig que cuando se serializa no va a llamar a este metodo. //@XmlTransient omite este atributo en la Serializacion, no lo incluye en el XML. //Daba error al exportar a pdf
 	public Cliente getCliente() {
 		return cliente;
 	}

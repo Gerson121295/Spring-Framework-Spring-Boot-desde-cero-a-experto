@@ -7,6 +7,10 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,6 +54,7 @@ public class Cliente implements Serializable {
 	@Column(name = "create_at") // Como se llama este campo en la tabla de la BD
 	@Temporal(TemporalType.DATE) // Indica el formato en que se va a guardar la fecha en la tabla de la BD
 	@DateTimeFormat(pattern="yyyy-MM-dd") //Establece el formato a recibir la fecha
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss") //para que al exportar en formato Json muestre la fecha de creacion en este formato
 	private Date createAt;
 	
 	private String foto;
@@ -64,6 +69,8 @@ public class Cliente implements Serializable {
 	//Nota: Debido a mappedBy="cliente"  automaticamente se crea el campo de la llave foranea "clienteId" en la tabla facturas para relacionar ambas tablas.
 	//orphanRemoval = true Opcional para eliminar items huerfanos que no estan asociados a ninguna factura.
 	@OneToMany(mappedBy="cliente", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval = true)
+	//@JsonIgnore  //debido a que esta relacionada con factura al exportar a JSON daba error al agregar @JsonIgnore se evita el error
+	@JsonManagedReference //Es la que queremos mostrar en nuestro JSON - Maneja las relaciones con factura al contrario de @JsonIgnore ignora la clase factura. //exportar a JSON
 	private List<Factura> facturas; //cliente tendra una lista de facturas
 	//En la clase que tenga el @Many(Muchos) creo que se crea el id (cliente_id) por defecto en este caso se crea en clase facturas
 
