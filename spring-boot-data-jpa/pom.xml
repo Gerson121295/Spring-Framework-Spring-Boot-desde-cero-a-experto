@@ -104,6 +104,12 @@
 		    <version>5.2.2</version>
 		</dependency>
 		
+		<!-- Exportar a CSV https://super-csv.github.io/super-csv/downloading.html -->
+		<dependency>
+		    <groupId>net.sf.supercsv</groupId>
+		    <artifactId>super-csv</artifactId>
+		    <version>2.4.0</version>
+		</dependency>
 		
 	</dependencies>
 
