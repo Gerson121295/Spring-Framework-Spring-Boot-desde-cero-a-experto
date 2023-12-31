@@ -154,7 +154,7 @@ CREATE TABLE `db_springboot`.`users` (
 		public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 			http.authorizeHttpRequests(auth -> auth
 					//Rutas Publicas
-					.requestMatchers("/", "/css/**", "/js/**", "/images/**", "/listar", "/locale").permitAll()
+					.requestMatchers("/", "/css/**", "/js/**", "/images/**", "/listar**", "/locale", "/api/clientes/**").permitAll() //listar**  al agregar ** permite aceptar todos los caracteres que vengan despues de la palabra listar
 					 
 					//Rutas Privadas necesitan que el usuario se autentique
 	//Se comento las rutas que requieren autorizacion para cambiar la autorizacion: Agregar seguridad en el controlador usando anotaciones @Secured o @PreAuthorize

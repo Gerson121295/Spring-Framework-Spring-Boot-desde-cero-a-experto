@@ -3,6 +3,7 @@ package com.bolsadeideas.springboot.app.controllers;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,11 +44,12 @@ import com.bolsadeideas.springboot.app.models.entity.Cliente;
 import com.bolsadeideas.springboot.app.models.service.IClienteService;
 import com.bolsadeideas.springboot.app.models.service.IUploadFileService;
 import com.bolsadeideas.springboot.app.util.paginator.PageRender;
+import com.bolsadeideas.springboot.app.view.xml.ClienteList;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
-@Controller
+@Controller //tambien se puede anotar con @RestController incluye @Controller @ResponseBody
 @SessionAttributes("cliente") //para evitar usar un input en el form que valide si el usuario ya fue creado si fue creado entonces se actualiza sino entonces se crea el registro.
 public class ClienteController {
 	
@@ -173,6 +176,20 @@ public class ClienteController {
 		return "listar";
 	}
 	
+	//Metodo handler que responderá con formato JSON
+	//Metodo Listar clientes con Paginacion - API REST: Forma usando anotacion @ResponseBody sobre el metodo Handler
+/*	@GetMapping(value="/listar-rest")
+	public @ResponseBody List<Cliente> listarRest(){ //@ResponseBody indica que el listado de cliente se va a almacenar en el cuerpo de la respuesta y al guardarse spring asume que es un Rest puede ser un JSON o xml
+		return clienteService.findAll(); 
+	}
+*/
+	
+	//Metodo handler que responderá con formato JSON y XML : http://localhost:8080/listar-rest?format=xml   //http://localhost:8080/listar-rest?format=json
+	//Metodo Listar clientes con Paginacion - API REST: Forma usando anotacion @ResponseBody sobre el metodo Handler
+	@GetMapping(value="/listar-rest")
+	public @ResponseBody ClienteList listarRest(){ //@ResponseBody indica que el listado de cliente se va a almacenar en el cuerpo de la respuesta y al guardarse spring asume que es un Rest puede ser un JSON o xml
+		return new ClienteList(clienteService.findAll()); 
+	}
 	
 	//Metodo para insertar un nuevo registro - Utiliza otra forma para pasar la data a la vista
 	@PreAuthorize("hasRole('ROLE_ADMIN')") //Agregar seguridad en el controlador usando anotaciones @PreAuthorize SOLO LOS usuarios con rol  ROLE_ADMIN pueden acceder
