@@ -20,6 +20,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name="facturas")
@@ -104,6 +105,7 @@ public class Factura implements Serializable {
 		this.createAt = createAt;
 	}
 
+	@XmlTransient //Sig que cuando se serializa no va a llamar a este metodo. //@XmlTransient omite este atributo en la Serializacion, no lo incluye en el XML
 	public Cliente getCliente() {
 		return cliente;
 	}

@@ -111,6 +111,25 @@
 		    <version>2.4.0</version>
 		</dependency>
 		
+		<!-- Exportar a XML -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-oxm</artifactId>
+		</dependency>
+		
+		<!-- Para exportar XML sola para version 9 o mayor del JDK java ya que no tiene las dependencia JAXB-API -->
+		
+		<dependency>
+		    <groupId>javax.xml.bind</groupId>
+		    <artifactId>jaxb-api</artifactId>
+		    <version>2.3.1</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.glassfish.jaxb</groupId>
+		    <artifactId>jaxb-runtime</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
