@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Codigo JavaScript para el autocompletada usando JQuery. Busque el producto automaticamente -->
+<script type="text/javascript" th:fragment="javascript">
+
+$(document).ready(function(){
+
+	//Autocompetado esta referenciado por el id buscar_producto del input de buscarProducto de factura/form
+	$("#buscar_producto").autocomplete({
+		source: function(request, response){ //metodos source se encarga de hacer la peticion Ajax, y el metodo select que se encarga de procesar el resultado y hacer algo con estos datos
+			$.ajax({//Implementacion del Metodo Ajax
+				url: "/factura/cargar-productos/" + request.term, //con el parametro term obtenemos el texto que el usuario escribe en el input
+				dataType: "json",
+				data:{
+					term: request.term
+				},
+				success: function(data){//success se encarga de recibir los datos en formato JSON y se lo pasamo al complete para pasarlo usamos response
+					response($.map(data, function(item){   //data es el arreglo, funcion que por cada item retorna el valor del id, nombre y precio del producto
+						return{
+							value: item.id,
+							label: item.nombre,
+							precio: item.precio,						
+					}; 
+				}));
+				}
+			});
+		},//Ajax busca el producto y con select permite manipular que va hacer con ese producto
+		//Implementacion del Metodo Select
+		select: function(event, ui){ //tomamos el label del producto y lo vamos a mostrar en el campo buscar_producto despues implementamos las lineas de las facturas
+			//$("#buscar_producto").val(ui.item.label);
+		
+		//Antes de crear la linea de la factura se debe preguntar si el producto existe
+			if(itemsHelper.hasProducto(ui.item.value)){ //ui.item.value es el id
+				itemsHelper.incrementaCantidad(ui.item.value, ui.item.precio); //aumenta el producto
+				return false; //si el producto existe solo incrementa la cantidad en 1 
+			}
+		
+			var linea = $("#plantillaItemsFactura").html(); //plantillaItemsFactura es el id de plantilla-items.html
+			
+			//Asignacion de los valores
+			linea = linea.replace(/{ID}/g, ui.item.value);
+			linea = linea.replace(/{NOMBRE}/g, ui.item.label);
+			linea = linea.replace(/{PRECIO}/g, ui.item.precio);
+			
+			//rellena los campos del tbody de la tabla en form con id cargarItemProductos
+			$("#cargarItemProductos tbody").append(linea);
+			itemsHelper
+			
+			//calculamos el importe
+			itemsHelper.calcularImporte(ui.item.value, ui.item.precio, 1);//funcion calcula importe se envia el id, precio y cantidad(aparecerá 1 por defecto)
+			
+		return false;		
+		}
+	});
+	
+	//Metodo que elimina la plantilla-items antes de enviarlo a la BD
+	$("form").submit(function(){ //al darle al evento submit se elimine la plantila del tbody con id plantillaItemsFactura
+		$("#plantillaItemsFactura").remove();
+		return;
+	}); //si no se elimina va a tomar como el input de la plantilla como si fuera una linea mas y lanzará un error xq el ID numerico no es parte de la linea
+	
+});
+
+
+
+var itemsHelper = { //Variable que contiene funciones de ayuda
+		//Funcion para calcular el importe
+	calcularImporte: function(id, precio, cantidad){
+		$("#total_importe_" + id).html(parseInt(precio) * parseInt(cantidad));
+		this.calcularGrantotal(); //Por si se cambia o actualiza una linea se debe de actualizar el gran_total
+	},
+	hasProducto: function(id){ //recorre la lista de la factura para ver si ya existe un producto esto para no agregarlo de nuevo si no aumentar la cantidad
+		//Compara el id item_id (plantilla-items.html) con el que estamos pasando
+		var resultado = false;
+	$('input[name="item_id[]"]').each(function(){
+		if(parseInt(id) == parseInt($(this).val()) ){
+			resultado = true;
+		}
+	});
+		return resultado;
+	},
+	//Metodo incrementa la cantidad del producto o linea existente
+	incrementaCantidad: function(id, precio){
+		var cantidad = $("#cantidad_" + id).val() ? parseInt($("#cantidad_" + id).val()) : 0; //Si tiene cantidad lo convertimos a integer y la guardamos en cantidad si no tiene se agrega 0
+		$("#cantidad_" + id).val(++cantidad); //a #cantidad_ se le aumenta y se reenvia a la variable #cantidad_
+		this.calcularImporte(id, precio, cantidad);	//luego de aumentar la cantidad se actualiza el importe
+	},
+	//Metodo de eliminar una linea de la factura
+	eliminarLineaFactura: function(id){
+		$("#row_" + id).remove(); //elimina utilizando el id row_ del tr de la tabla de plantilla-items.html
+		this.calcularGrantotal(); //Por si se cambia o actualiza una linea se debe de actualizar el gran_total
+	},
+	//Metodo para calcular el gran total de la factura
+	calcularGrantotal: function(){
+		var total = 0;
+		$('span[id^="total_importe_"]').each(function(){ //recorremos con each span don del id sea total_importe_
+			total += parseInt($(this).html()); //por cada span encontramos su html y lo convetimos a int y lo sumamos en total
+		});
+		$('#gran_total').html(total);		//asignamos el total al gran_total del h5 del /factura/form
+	}
+}
+
+
+</script>
+
+</body>
+</html>
+
+
+

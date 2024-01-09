@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head">
+<meta charset="UTF-8" />
+<title th:text="'Spring Boot: MVC + Thymeleaf + Data JPA - ' + ${titulo}"></title>
+
+<!-- Agregar estilo Bootstrap online -->
+<!--  
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+-->
+
+<!-- Agregar estilo Bootstrap descargado el archivo: pegar la url en el navegador: https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css
+y guardar luego pegar en la carpeta de css en static. Luego importar el archivo con la hoja de estilos-->
+
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+<!-- Agregar hoja de estilo de Jquery: ir a la pagina https://jqueryui.com/ y descargar la version Stable luego descomprimir 
+la carpeta descargada y copiar y pegar los archivos: jquery-ui.min.css y jquery-ui.min.js en la carpeta css y js del proyecto luego importar los archivos -->
+<link th:href="@{/css/jquery-ui.min.css}" rel="stylesheet">
+
+</head>
+<body>
+
+<header th:fragment="header">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand" th:href="@{/}">Spring Boot</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link active" aria-current="page" th:href="@{/}" th:text="#{text.menu.home}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/listar}" th:text="#{text.menu.customer}">Clientes</a>
+        </li>
+      </ul>
+      
+      <ul class="navbar-nav d-flex ms-auto">
+      	<li sec:authorize="!isAuthenticated()">
+      		 <a class="btn btn-outline-primary" th:href="@{/login}" th:text="#{text.menu.signin}">Sign In</a>
+      	</li>
+      	
+      	<li sec:authorize="isAuthenticated()" class="dropdown show">
+  			<a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    			<span sec:authentication="name"></span>
+  			</a>
+
+  			<div class="dropdown-menu">
+			    <form id="logoutForm" th:action="@{/logout}" method="post">
+			    	<button class="dropdown-item" onclick="document.getElementById('logoutForm').submit();" type="submit" th:text="#{text.menu.signout}">Sign Out</button>
+			    	
+			    	<!-- Se deshabilito csrf en springSecurityConfig por lo que este input no es necesario ahora se trabajará con JWT 
+			    	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+			    	-->
+			    	
+			    </form>
+			 </div>
+		</li>     	
+      </ul>
+      
+      <!-- Forma 1: Menú para cambiar idioma al sitio web -->
+<!-- 
+      <ul class="navbar-nav d-flex ms-auto mx-4">
+      	 <li class="nav-item mx-1"><a class="btn btn-outline-success" href="?lang=es_ES">ES</a></li> 
+      	 <li class="nav-item mx-1"><a class="btn btn-outline-success" href="?lang=en_US">EN</a></li> 
+      	 <li class="nav-item mx-1"><a class="btn btn-outline-success" href="?lang=de_DE">DE</a></li> 
+       </ul>
+-->
+      
+       <!-- Forma 2: Menú Botones Horizontal para cambiar idioma al sitio web -  Usando el LocaleController  -->
+      <ul class="navbar-nav d-flex ms-auto mx-4">
+      	 <li class="nav-item mx-1"><a class="btn btn-outline-success" th:href="@{/locale(lang=es_ES)}">ES</a></li> 
+      	 <li class="nav-item mx-1"><a class="btn btn-outline-success" th:href="@{/locale(lang=en_US)}">EN</a></li> 
+      	 <li class="nav-item mx-1"><a class="btn btn-outline-success" th:href="@{/locale(lang=de_DE)}">DE</a></li> 
+      	 
+      	 <!-- Otro diseño alternativo: Menú desplegable para seleccionar el idioma -->
+      	 <li class="nav-item dropdown show mx-2"> 
+      	 	<a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" id="dropdownLenguaje" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    			<span th:text="#{text.locale.language}"></span>
+  			</a>
+  			<div class="dropdown-menu">
+  				<a class="dropdown-item" th:href="@{/locale(lang=es_ES)}" th:text="#{text.locale.es}">ES</a>
+  				<a class="dropdown-item" th:href="@{/locale(lang=en_US)}" th:text="#{text.locale.en}">EN</a>
+  				<a class="dropdown-item" th:href="@{/locale(lang=de_DE)}" th:text="#{text.locale.de}">DE</a>
+  			</div>
+      	 </li>
+       </ul>
+      
+      
+    </div>
+</nav>
+
+<div class="alert alert-success" th:if="${success != null}" th:text="${success}"></div>
+<div class="alert alert-danger" th:if="${error != null}" th:text="${error}"></div>
+<div class="alert alert-warning" th:if="${warning != null}" th:text="${warning}"></div>
+<div class="alert alert-info" th:if="${info != null}" th:text="${info}"></div>
+</header>
+
+<div class="container"></div>	
+
+<footer th:fragment="footer" class="container">
+<hr />
+<img th:src="@{/images/spring3-logo.png}" alt="Spring logo" width=100px hight=100px/>
+<p sec:authorize="isAuthenticated()">
+	<span th:text="#{text.footer.user}">Usuario logeado:</span>
+	<span sec:authentication="name"></span> | 
+	<span th:text="#{text.footer.roles}">Roles:</span>
+	<span sec:authentication="principal.authorities"></span>
+</p>
+
+
+
+		<p th:utext="#{text.footer.powered}">
+			Powered by <a href="https://projects.spring.io/spring-boot/">Spring
+				Boot</a> y <a href="http://www.thymeleaf.org">Thymeleaf</a>.
+		</p>
+		
+<p th:utext="#{text.footer.copy}">
+Este proyecto fue desarrollado en IDE Eclipse + Spring Plugins (STS Spring Tool), profesor Andrés Guzmán.<br /> &copy; Company 2017, Inc. Todos los derechos reservados. Términos de uso y privacidad.<br />
+</p>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Bootstrap JS -->
+<!-- forma 1 de importar js de Bootstrap Online -->
+<!--  
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+-->
+
+<!--forma 1 de importar js de Bootstrap los archivos
+pegar la url (sin el slim para descargar completa) en el navegador https://code.jquery.com/jquery-3.3.1.min.js luego guardar el archivo y copiarlo a la carpeta js de static
+descargar y pegar a la carpeta js de static los siguientes archivo: 
+	https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js
+	https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js 
+	
+	Luego importar los archivos scripts
+  -->
+
+<!--  
+<script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+--> 
+ 
+ <!-- Agregar hoja de estilo de Jquery: ir a la pagina https://jqueryui.com/ y descargar la version Stable luego descomprimir 
+la carpeta descargada y copiar y pegar los archivos: jquery-ui.min.css y jquery-ui.min.js en la carpeta css y js del proyecto luego importar los archivos -->
+ 
+ <!--  
+<script th:src="@{/js/jquery-ui.min.js}"></script>
+-->  
+
+
+<!-- Nota:
+Hola si estas usando bootstrap 5 en adelante solo incluyes:
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+ya que se incluye todo, pero si usas bootstrap 4, es tal como esta en el curso:
+
+		<script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+		<script th:src="@{/js/popper.min.js}"></script>
+		<script th:src="@{/js/bootstrap.min.js}"></script>
+		<script th:src="@{/js/jquery-ui.min.js}"></script>		
+-->
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/js/jquery-ui.min.js}"></script>
+
+</footer>
+	
+</body>
+</html>
