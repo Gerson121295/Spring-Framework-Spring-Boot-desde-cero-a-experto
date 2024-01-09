@@ -18,7 +18,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-
+import com.bolsadeideas.springboot.app.auth.service.JWTService;
 import com.bolsadeideas.springboot.app.models.entity.Usuario;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -32,7 +32,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 
 
 //https://stackoverflow.com/questions/41975045/how-to-design-a-good-jwt-authentication-filter
@@ -51,13 +50,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public static final SecretKey SECRET_KEY = new SecretKeySpec("algunaLlaveSecretsfasfasfasfagabafaf".getBytes(), SignatureAlgorithm.HS512.getJcaName());
 	
 	private AuthenticationManager authenticationManager;
-	//private JWTService jwtService;
+	private JWTService jwtService;
 	
-	public JWTAuthenticationFilter(AuthenticationManager authenticationManager) { //, JWTService jwtService) {
+	public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTService jwtService) {
 		this.authenticationManager = authenticationManager;
 		setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/login", "POST"));
 		
-		//this.jwtService = jwtService; //el primer this.jwtService es el atributo de la clase el segundo es la igualacion al parametro que se pasa en el constructor
+		this.jwtService = jwtService; //el primer this.jwtService es el atributo de la clase el segundo es la igualacion al parametro que se pasa en el constructor
 		
 	}
 
@@ -107,31 +106,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 FilterChain chain, Authentication authResult) throws IOException {
 	        
 	   //Creacion del token
-		//String token = jwtService.create(authResult);
-	    
-		 //Obtenemos el username para generar el token
-		String username = ((User) authResult.getPrincipal()).getUsername(); //Obtenemos el username para generar el token
-		Date fechaCreacion = new Date();
-		Date fechaExpiracion = new Date(System.currentTimeMillis() + 14000000L);
-			
-		Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();	
-		Claims claims = Jwts.claims();
-		claims.put("authorities", new ObjectMapper().writeValueAsString(roles));
- /*       claims.put("authorities", authResult.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toArray(String[]::new));
-  */   	
-
-		//Generamos el token
-		String token = Jwts.builder()
-                .setClaims(claims)
-                .setSubject(username)
-                .signWith(JWTAuthenticationFilter.SECRET_KEY)
-                .setIssuedAt(fechaCreacion)
-                .setExpiration(fechaExpiracion)
-                .compact();
-		//3600000=1hora (4horas = 3600000*4)  14000000L=2 horas
-		
+		String token = jwtService.create(authResult);
 		
 		//Pasar el token en la respuesta del usuario
 		 response.addHeader("Authorization", "Bearer " + token);

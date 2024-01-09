@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.bolsadeideas.springboot.app.auth.filter.JWTAuthenticationFilter;
 import com.bolsadeideas.springboot.app.auth.filter.JWTAuthorizationFilter;
 import com.bolsadeideas.springboot.app.auth.handler.LoginSuccesHandler;
-
+import com.bolsadeideas.springboot.app.auth.service.JWTService;
 import com.bolsadeideas.springboot.app.models.service.JpaUserDetailsService;
 
 @Configuration
@@ -48,8 +48,8 @@ public class SpringSecurityConfig {
 	 @Autowired
      private JpaUserDetailsService userDetailService;
 	 
-	// @Autowired
-	 //private JWTService jwtService;
+	@Autowired
+	 private JWTService jwtService;
 	 
 	//Creacion de usuario Local - Memory authentication
 /*	@Bean
@@ -186,9 +186,8 @@ CREATE TABLE `db_springboot`.`users` (
 			//- Para mostrar la vista 404 a usuarios que no tengan permiso para ver una ruta
 			http.csrf(csrf -> csrf.disable()); //http.csrf().disable();
 			http.sessionManagement(sessionMang -> sessionMang.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-			http.addFilter(new JWTAuthenticationFilter(authenticationConfiguration.getAuthenticationManager()));//, jwtService));
-			http.addFilter(new JWTAuthorizationFilter(authenticationConfiguration.getAuthenticationManager()));
-			
+			http.addFilter(new JWTAuthenticationFilter(authenticationConfiguration.getAuthenticationManager(), jwtService));
+			http.addFilter(new JWTAuthorizationFilter(authenticationConfiguration.getAuthenticationManager(), jwtService));
 /*			
 			//- Para mostrar la vista 404 a usuarios que no tengan permiso para ver una ruta
 			try {
