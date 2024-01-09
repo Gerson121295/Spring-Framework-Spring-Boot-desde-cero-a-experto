@@ -1,32 +1,23 @@
 package com.bolsadeideas.springboot.app.auth.filter;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.bolsadeideas.springboot.app.auth.service.JWTService;
+import com.bolsadeideas.springboot.app.auth.service.JWTServiceImpl;
 import com.bolsadeideas.springboot.app.models.entity.Usuario;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -47,7 +38,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		}
 	*/
 	
-	public static final SecretKey SECRET_KEY = new SecretKeySpec("algunaLlaveSecretsfasfasfasfagabafaf".getBytes(), SignatureAlgorithm.HS512.getJcaName());
+	//Esta funciona 
+	//public static final SecretKey SECRET_KEY = new SecretKeySpec("algunaLlaveSecretsfasfasfasfagabafaf".getBytes(), SignatureAlgorithm.HS512.getJcaName());
 	
 	private AuthenticationManager authenticationManager;
 	private JWTService jwtService;
@@ -109,7 +101,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		String token = jwtService.create(authResult);
 		
 		//Pasar el token en la respuesta del usuario
-		 response.addHeader("Authorization", "Bearer " + token);
+		 response.addHeader(JWTServiceImpl.HEADER_STRING, JWTServiceImpl.TOKEN_PREFIX + token);
 
 		//pasar el token en una estructrua Json
 	        Map<String, Object> body = new HashMap<>();
@@ -121,9 +113,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
 	        response.setStatus(200);
 	        response.setContentType("application/json");
-	      
-
-	    
+	     
 	      //super.successfulAuthentication(request, response, chain, authResult);
 	}
 
