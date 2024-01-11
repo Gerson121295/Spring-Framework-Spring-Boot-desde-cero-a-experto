@@ -1,0 +1,135 @@
+
+
+		# Despliegue en Servidores externos
+-- Tomcat Embebido: Generando el archivo jar para el despliegue
+- Clic derecho sobre la carpeta del proyecto luego clic en Run As -> clic Maven Install.
+- AL ejecutar el maven Install da error debemos configurar el JDK: Ir a la pestaña de windows en eclipse
+- luego ir a preferences -> Java -> Installed JREs -> y Ahi debemos agregar el JDK -> clic en add -> 
+-> elegir Standar VM y clic en Next -> Luego elegir la ubicacion del JDK 17 y luego clic en aceptar -> Apply 
+-> Apply and Close.
+
+- Luego en el submenu de Installed JREs dar clic a Execution Environments y seleccionar JavaSE- 17
+-> y seleccionamos o damos check en jdk-17.0.4.1 en Compatible JREs: luego clic en Apply and Close.
+
+- Luego volver a ejecutar: Clic derecho sobre la carpeta del proyecto luego clic en Run As -> clic Maven Install.
+
+- Otra forma es clic derecho sobre el proyecto y Clic en Show Local Terminal -> Terminal y ejecutar: mvn clean install  con esto se crea el archivo jar
+
+
+-- Tomcat Embebido: Realizando el despliegue (deploy)
+- Abrir el PowerShell en modo administrador luego ir a la ruta del proyecto: C:\Users\Hp01\OneDrive\Escritorio\Cursos\Udemy\Spring Boot desde 0 a experto\spring-boot-data-jpa
+- Estando en la ruta del proyecto ejecutar el .jar: java -jar .\target\spring-boot-data-jpa-0.0.-SNAPSHOT.jar
+Practica:
+PS C:\Users\Hp01\OneDrive\Escritorio\Cursos\Udemy\Spring Boot desde 0 a experto> cd spring-boot-data-jpa
+PS C:\Users\Hp01\OneDrive\Escritorio\Cursos\Udemy\Spring Boot desde 0 a experto\spring-boot-data-jpa> java -jar .\target\spring-boot-data-jpa-0.0.1-SNAPSHOT.jar
+
+Y con esto ya tendriamos levantado el proyecto y se podria ingresar a las rutas (/lista, etc).
+
+
+-- Servidor Externo Tomcat: Download y modificando nuestro proyecto war
+-Descargar Tomcat e instalarlo(se uso version9)
+- Servidor Tomcat externo solo funciona usando war, Tomcat que trae springboot solo ejecuta .jar:
+
+- Para convertir nuestro proyecto a war debemos abrir el pom.xml y modificar lo siguiente:
+-Agregar el packaging -> war
+	<groupId>com.bolsadeideas.springboot.tomcat.app</groupId>
+	<artifactId>spring-boot-tomcat</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>  //se agrego war
+	<name>spring-boot-data-tomcat</name>
+	<description>learn about JPA</description>
+
+- Agregar otra dependencia para especificar que se usará un servidor Tomcat externo
+//Tener esta dependencia
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+//Dependencia agregada indica que tomcat ser proveida
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+//Eliminar esta dependencia ya que no se va a necesitar, solo es para desarrollo
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+
+- Luego clic en la carpeta del proyecto y clic en Maven y clic en Update Project
+- Luego Crear la clase ServletInitializer en la carpeta principal del proyecto: package com.bolsadeideas.springboot.app;  donde esta la clase main: SpringBootDataJpaApplication
+
+	public class ServletInitializer extends SpringBootServletInitializer{
+		@Override
+		protected SpringApplicationBuilder configure(SpringApplicationBuilder builder){
+			return builder.sources(SpringBootDataJpaApplication.class);
+		}
+	}
+
+Nota: Clic derecho sobre la carpeta del proyecto luego clic en Run As -> y al darle clic en Maven Clean borra todo el contenido de la carpeta target
+
+//Crear el archivo .war
+- Luego: Clic derecho sobre la carpeta del proyecto luego clic en Run As -> clic Maven Install.
+- Otra forma de crear el archivo .war es clic derecho sobre el proyecto y Clic en Show Local Terminal -> Terminal y ejecutar: mvn clean install  con esto se crea el archivo .war
+
+- Despues de haber creado el archivo .war se procede a hacer el despliegue.
+- Abrir el powerShell en modo administrador e Ir a la ruta donde esta instalado el servidor cd apache-tomcat-9.0.8
+- luego ir a la ruta del bin: apache-tomcat-9.0.8> cd bin
+-> Luego ejecutar .\startup.bat: apache-tomcat-9.0.8\bin> .\startup.bat
+#Se abrira una ventana consola:
+-> luego regresamos a una ruta antes del bin ejecutando: cd .. 
+-> luego entrar a la carpeta webapps: apache-tomcat-9.0.8> cd .\webapps\
+#Lo que procede ahorita es copiar nuestro archivo .war que ese encuentra en target a la carpeta de \webapps\
+-> Ejecutamos: apache-tomcat-9.0.8\webapps> cp C:\Users\Cursos\Spring Boot desde 0 a experto\spring-boot-data-jpa\target\spring-boot-data-jpa-0.0.1-SNAPSHOT.war
+#En la ventana consola se empieza ha hacer el deploy(levantar el proyecto de spring): y Ya podemos tener acceso a las rutas a traves del navegador(se usa el nombre del archivo.war): localhost:8080/spring-boot-data-jpa-0.0.1-SNAPSHOT/listar
+//Para cambiar el nombre al archivo.war
+-> Ejecutamos: apache-tomcat-9.0.8\webapps> Rename-Item .\spring-boot-data-jpa-0.0.1-SNAPSHOT.war .\spring-boot-data-jpa.war
+y Ya podemos tener acceso a las rutas a traves del navegador(se usa el nombre del archivo.war): localhost:8080/spring-boot-data-jpa/listar
+
+##Tener en cuenta que en un servidor externo se utiliza el nombre del proyecto para hacer las peticiones por lo cual en partes del codigo donde se define ruta del proyecto de acceso
+se debe agregar la ruta del proyecto.
+
+##Modificar factura/form.html
+//Abajo del footer agrega un input
+<input type="hidden" id="urlAjax" th:value="@{'/factura/cargar-productos/'}" /> //a travez de JavaScript obtenemos el valor de la ruta.
+
+
+##Modificar: templates/factura/js archivo: autocomplete-productos.html
+	 $(document).ready(function(){    //Abajo de esto se define la variable  que contendra la url
+		var urlAjax = $("#urlAjax").val();
+
+## luego modificar agregar el nombre del proyecto a rutas para buscar el producto automaticamente esto debido a que ahora se encuentra en un servidor Tomcat Externo, en un servidor enbebido no era necesario ya que se encuentra en la raiz del proyecto.
+// templates/factura/js archivo: autocomplete-productos.html
+	url : "/factura/cargar-productos/" + request.term,   //Antes: tomcat enbebido(el que trae springboot) no es necesario agregar el nombre del proyecto a la ruta
+	url : urlAjax + request.term,   //Ahora: Servidor tomcat externo es necesario agregar el nombre del proyecto a la ruta
+
+-Luego se procede a ejecutar nuevamente crear el archivo.war luego desplegarlo en el servidor Tomcat externo:
+y Ya podemos tener acceso a las rutas a traves del navegador(se usa el nombre del archivo.war): localhost:8080/spring-boot-data-jpa/listar
+->Luego tenemos que bajar o apagar el servidor, ejecutar: apache-tomcat-9.0.8\bin> .\shutdown.bat
+
+
+//Nota Si ocurriese un error al desplegar nuestra app en el servidory no se pudiera ver el cliente, podria ser error en las validaciones: cambiar la importacion a import org.hibernate.validator.constraints.NotEmpty;
+
+
+	# Deployment: Heroku Cloud
+	# Deployment: Heroku Cloud - MySQL
+
+	//Instalaciones Para angular:
+Instalar node version LTS: https://nodejs.org/en  //Revisar instalacion en CMD modo admin: node -v  y npm -v
+Instalar TypeScript: npm install -g typescript    //Revisar instalacion: tsc -v
+Instalar Angular: npm install -g @angular/cli    //Revisar instalacion: ng version
+Abrir el powerShell de windows y ejecutar: Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+
+Crear un Proyecto de Angular: ng new my-app
+Run the application: cd my-app   ->  ng serve --open   -> http://localhost:4200/
+
+
+
+
+
+
