@@ -1,0 +1,15 @@
+
+<!--  (habilitar==true) ? false: true  - Si habilitar es true entonces al precionar será false, pero si es false pasa a true -->
+<!--  Forma 1:
+<button type="button"(click)="habilitar= (habilitar==true) ? false: true" class="btn btn-primary my-3">{{habilitar==true? 'Ocultar' : 'Mostrar'}}</button>
+-->
+<!-- forma2  invoca al metod setHabilitar() -->
+<button type="button"(click)="setHabilitar()" class="btn btn-primary my-3">{{habilitar==true? 'Ocultar' : 'Mostrar'}}</button>
+<div class="card">
+    <div class="card-header">
+        Listado de Cursos
+    </div>
+    <ul class="list-group" *ngIf="habilitar"> <!--otra forma: *ngIf="habilitar == true"-->
+        <li class="list-group-item" *ngFor="let curso of listaCurso">{{curso}}</li>
+    </ul>
+</div>

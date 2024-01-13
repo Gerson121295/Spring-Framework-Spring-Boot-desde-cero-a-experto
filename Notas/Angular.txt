@@ -1,0 +1,157 @@
+
+
+//Instalaciones Para angular:
+Instalar node version LTS: https://nodejs.org/en  //Revisar instalacion en CMD modo admin: node -v  y npm -v
+Instalar TypeScript: npm install -g typescript    //Revisar instalacion: tsc -v
+Instalar Angular: npm install -g @angular/cli    //Revisar instalacion: ng version
+Abrir el powerShell de windows y ejecutar: Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+
+Crear un Proyecto de Angular: ng new my-app  -> Otra forma agrega app.module.ts: ng new --no-standalone
+Run the application: cd my-app   ->  ng serve --open   -> http://localhost:4200/
+
+-- Instalacion de Bootstrap
+Forma 1: npm install bootstrap@5.3.2
+
+Otra forma: copiar CDN y pegar los link en el index.html
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+
+-- Crear componente en angular
+- Forma 1 Manual: Clic en la carpeta app de angular y crear una carpeta llamada: "header" dentro de esa carpeta crear nuevo archivo llamado: "header.component.ts" 	
+Luego en el archivo creado se debe escribir este codigo:
+
+	import { Component } from "@angular/core";
+
+@Component({
+        selector: 'app-header',
+        standalone: true,
+        //template: `Agregar codigo html `,
+        templateUrl: './header.component.html', //agrega el archivo html 
+    })
+export class HeaderComponent {
+title:string = 'App Angular';
+}
+
+- Forma 2 de crear un componente usando la consola:
+- Abrir consola luego ir a la carpeta de app y crear un directorio con mkdir footer y ejecutar: ng generate class footer.component
+
+PS C:\Users\Escritorio\Spring Boot desde 0 a experto\angular\clientes-app> cd src
+PS C:\Users\Escritorio\Spring Boot desde 0 a experto\angular\clientes-app\src> cd app
+PS C:\Users\Escritorio\Spring Boot desde 0 a experto\angular\clientes-app\src\app> mkdir footer
+PS C:\Users\Hp01\OneDrive\Escritorio\Cursos\Udemy\Spring Boot desde 0 a experto\angular\clientes-app\src\app> cd footer
+PS C:\Users\Hp01\OneDrive\Escritorio\Cursos\Udemy\Spring Boot desde 0 a experto\angular\clientes-app\src\app\footer> ng generate class footer.component
+
+
+Otra forma de crear componente: //Automaticamente crea el archivos .html, .css y .ts
+ ng generate component directiva //otra forma: ng g c directiva
+
+
+Crear componente Clientes y dentro de ese componente crear una clase:
+Componente cliente usando:  ng g c clientes
+PS C:\Users\Escritorio\Spring Boot desde 0 a experto\angular\clientes-app\src\app> cd .\clientes\
+PS C:\Users\Escritorio\Spring Boot desde 0 a experto\angular\clientes-app\src\app\clientes> ng g class cliente  // dentro del componente cliente se crea la clase cliente
+
+** Crear clase de servicio: Ubicarse en la carpeta a crear luego ejecutar: ng g service cliente
+
+### Formas de agregar Bootstrap al proyecto:
+##Forma 1:
+ir a bootstap y copiar los CDN y pegarlos dentro del archivo index.html
+-- Dentro del head (al final en las ultimas lineas se agrega los links de CSS)
+-- Dentro del body (al final en las ultimas lineas se agrega los links de Script JS)
+
+<head>
+  <!--Agregar bootstrap pegando enlaces CSS-->   
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+  <app-root></app-root>
+  <!--Agregar bootstrap pegando enlaces Script JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+</body>
+
+
+
+##Forma 2:
+## Instalar Bootstrap descargando los archivos y pegandolos en las carpetas css y js creadas dentro de carpeta assets del proyecto.
+-- Ir a boostrap CDN y luego abrir los link en el navegador luego descargar los archivos y pegarlos dentro de la carpeta de asset del proyecto.
+- Dentro de la carpeta de css
+	https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css
+- Dentro de la carpeta de jss van los archivos script js descargados de los links
+	https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js
+	https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js
+	https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js 
+
+<head>
+	<!--Agregar bootstrap Descargando archivo y guardandolo en carpeta: asset/css --> 
+	<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  	<app-root></app-root>
+	<!--Agregar bootstrap Descargando archivo y guardandolo en carpeta: asset/js --> 
+	<link href="assets/js/jquery-3.3.1.min.js" rel="stylesheet">
+	<link href="assets/js/bootstrap.min.js" rel="stylesheet">
+	<link href="assets/js/popper.min.js" rel="stylesheet">
+</body>
+
+Y listo tenemos acceso a bootstrap de manera local:
+
+NOTA: El archivo angular.json contiene configuracion: dentro de ellas se encuentra la carpeta assets que guarda archivos para nuestro proyecto.
+
+** Otra forma de guardar los estilos bootstrap de los archivos css y js descargado, que se coloca la ruta en index.html otra forma es agregar la ruta
+de esos archivos en el archivo angular.json especificamente en la variables, Styles y Scripts, por lo que no es necesario agregar esa ruta en el archivo index.html:
+ "styles":[*Agregar ruta de archivos cs] 
+ "Scripts":[*Agregar ruta de archivos js]
+
+Antes estaba asi:
+	"styles": [
+              "src/styles.css"
+            ],
+         "scripts": []
+
+Queda asi:
+	      "styles": [
+              "src/styles.css",
+              "src/assets/css/bootstrap.min.css"
+            ],
+            "scripts": [
+              "src/assets/js/jquery-3.3.1.min.js",
+              "src/assets/js/popper.min.js",
+              "src/assets/js/bootstrap.min.js"
+            ]
+
+
+## Forma 3 de instalar Bootstrap  usando la consola por medio npm
+Ir a https://getbootstrap.com/  y copiar: npm i bootstrap@5.3.2
+JQuery se instala por aparte: npm install jquery --save
+
+Luego en consola ejecutar: npm i bootstrap@5.3.2 popper.js --save //agregar popper.js
+  
+Luego ir al archivo package.json para ver si se instalo bootstrap
+Luego de instalar estas librerias estas se guardan en la carpeta .node_modules del proyecto por lo que se debe ir a ver la ruta para
+Luego agregar la ruta de la ubicacion de los archivos instalado en el archivo angular.json en las variables styles y scripts.
+
+Queda asi:
+
+		"styles": [
+              "src/styles.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css"
+            ],
+             "scripts": [
+              "./node_modules/jquery/dist/jquery.min.js",
+              "./node_modules/popper.js/dist/umd/popper.min.js",
+              "./node_modules/bootstrap/dist/js/bootstrap.min.js"
+              
+            ]
+
+
+
+
+
+
+
+
+
+
