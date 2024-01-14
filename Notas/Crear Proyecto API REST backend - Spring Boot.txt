@@ -1,0 +1,57 @@
+
+	#Crear proyecto  API REST Spring web en Eclipse
+
+- Clic en la pestaña File -> clic en New (otra forma Clic derecho sobre el espacio en Project Explorer -> New) luego clic en
+ -> Other -> Desplegar la carpeta Spring Boot -> Clic en Spring Starter Project
+
+-- Especificamos los datos de la app
+	Name: spring-boot-backend-apirest
+	Location: Especificamos la ubicacion(Debemos tener creada la carpeta donde queremos que se guarde nuestro proyecto)
+	Type: Maven		Packaging: Jar
+	Java Version: 17	Languaje: java
+	Group: com.bolsadeideas.springboot.backend.apirest
+	Artifact: spring-boot-backend-apirest
+	Version: 0.0.1-SNAPSHOT
+	Descripcion: Esta será una app para backend de angular tendra un CRUD.
+	Package: com.bolsadeideas.springboot.backend.apirest
+
+Click en  -> Next
+
+-- Seleccionar las dependencias del proyecto:
+	- Spring Boot DevTools  - Spring Data JPA  - Spring Web - MySQL Driver
+
+Click en  -> Finish
+
+##Nota realizar esta configuracion para asegurarse que el proyecto este usando el JDK17(que tenemos instalado)
+Clic derecho sobre la carpeta del proyecto -> properties -> Java Build Path -> Seleccionar la pestaña Libraries luego
+-> Seleccionar JRE SYstem Library[jdk-17.0.4.1] -> clic en la opcion edit -> Seleccionar(clic) en Workspace default JRE(jdk-17.0.4.1) 
+-> clic en Finish luego -> clic en Apply -> clic en Apply and Close.
+
+
+-- Agregar datos SQL para pruebas
+
+Clic derecho en la carpeta src/mainresources -> New -> Others -> Desplegar carpeta SQL Development -> Clic en SQL File -> 
+-> Dar nombre al archivo obligatoriamente como: import.sql y clic en Finish y Listo
+
+
+
+
+//CORS sig: Intercambio de recursos de origen cruzado  - Permite a los navegadores enviar y recibir datos restringidos (script, archivos de un dominio a otro diferente)
+//CORS (Cross-Origin Resource Sharing) es un mecanismo que, a través de las cabeceras de los encabezados HTTP, va a permitir a un determinado cliente (User-Agent) a acceder a los recursos de un servidor diferente al del servidor actual
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

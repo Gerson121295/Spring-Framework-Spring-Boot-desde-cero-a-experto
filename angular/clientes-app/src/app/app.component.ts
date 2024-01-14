@@ -5,7 +5,7 @@ import { DirectivaComponent } from "./directiva/directiva.component";
 import { ClientesComponent } from "./clientes/clientes.component";
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
+import { HttpClientModule } from '@angular/common/http';
 
 
 @Component({
@@ -14,8 +14,11 @@ import { RouterModule } from '@angular/router';
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
     imports: [HeaderComponent, FooterComponent, DirectivaComponent, 
-      ClientesComponent, CommonModule, RouterModule]
+      ClientesComponent, CommonModule, RouterModule, HttpClientModule]
 })
+//HttpClientModule - Para conectar con el back en springBoot metodos CRUD
+
+
 export class AppComponent {
   title = 'Bienvenido Angular';
   curso = 'Curso Spring 6 con Angular 17';
