@@ -23,8 +23,10 @@ public class Cliente implements Serializable{ //Serializable para guardar atribu
 	@GeneratedValue(strategy=GenerationType.IDENTITY) //La clave primaria se agregar e incrementa automaticamente
 	private Long id;
 	//@Column(name="nombre", nullable=false)  -Solo se agrega la anotacion @Column cuando el atributo de la clase se llame diferente con el nombre del campo de la tabla de la BD
+	@Column(nullable = false) //El nombre no puede ser falso o ir vacio
 	private String nombre;
 	private String apellido;
+	@Column(nullable = false, unique=true) //El email no puede ir vacio o falso y debe ser unico
 	private String email;
 	
 	@Column(name="create_at") //Se agrego column porque el atributo createAt de la clase "Cliente", en la tabla clientes de la BD se llamara create_at
@@ -37,22 +39,6 @@ public class Cliente implements Serializable{ //Serializable para guardar atribu
 		createAt = new Date();
 	}
 	
-	
-/*	
-	//Constructor Vacio
-	public Cliente() {
-		
-	}
-	
-	//Constructor con parametros
-	public Cliente(Long id, String nombre, String apellido, String email, Date createAt) {
-		this.id = id;
-		this.nombre = nombre;
-		this.apellido = apellido;
-		this.email = email;
-		this.createAt = createAt;
-	}
-	*/
 	
 	//Metodos Getters and Setters
 	

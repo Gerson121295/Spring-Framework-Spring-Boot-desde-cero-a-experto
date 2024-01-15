@@ -1,9 +1,13 @@
 package com.bolsadeideas.springboot.backend.apirest.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,38 +43,107 @@ public class ClienteRestController {
 	
 	//Buscar a un cliente por id : Metodo GET - http://localhost:8080/api/clientes/1
 	@GetMapping("/clientes/{id}")
-	@ResponseStatus(HttpStatus.OK) //Retorna ok 200 el estado cuando encuentra el cliente
-	public Cliente show(@PathVariable Long id) {
-		return clienteService.findById(id);
+	public ResponseEntity<?> show(@PathVariable Long id) {
+		
+		//Manejar problemas que pueden darse en la BD
+		Cliente cliente = null;
+		Map<String, Object> response = new HashMap<>();
+		
+		try {
+			cliente = clienteService.findById(id); //Busca  al cliente y lo guarda en cliente
+		} catch(DataAccessException e) {
+			response.put("mensaje", "Error al realizar la consulta en la BD");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		//Si el cliente a buscar no existe Retorna un NOT_FOUND
+		if(cliente == null) { 
+			response.put("mensaje", "El cliente ID: ".concat(id.toString().concat(" no existe en la BD")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK); //Retorna el cliente buscado y codigo 200 de OK
 	}
 	
 	//Guardar o crear cliente : Metodo POST - http://localhost:8080/api/clientes  ->  { "nombre": "Turco",  "apellido":"Reu", "email": "turquin@gmail.com" }
 	@PostMapping("/clientes")
-	@ResponseStatus(HttpStatus.CREATED) //Retorna code 201 ok el estado cuando se crea el cliente
-	public Cliente create(@RequestBody Cliente cliente) {
+	public ResponseEntity<?> create(@RequestBody Cliente cliente) {
 		//cliente.setCreateAt(new Date()); //para agregar la fecha de creacion cuando se crea el cliente, otra forma de agregar una fecha es en la clase cliente lo cual se hizo.
-		return clienteService.save(cliente);
+	
+		//Manejar problemas que pueden darse en la BD
+		Cliente clienteNew = null;
+		Map<String, Object> response = new HashMap<>();
+				
+		try {
+			clienteNew = clienteService.save(cliente); //Crea o guarda  al cliente en la BD
+		} catch(DataAccessException e) {
+			response.put("mensaje", "Error al realizar el insert en la BD");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		response.put("mensaje", "El cliente ha sido creado con exito!");
+		response.put("cliente", clienteNew);
+		
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
+	
+	
 	
 	//Editar un cliente  :  Metodo PUT - http://localhost:8080/api/clientes/3   ->  {"nombre": "Ivan", "apellido": "Godinez", "email": "ivas@gmail.com" }
 	@PutMapping("/clientes/{id}") 
-	@ResponseStatus(HttpStatus.CREATED) //Retorna code 201 ok el estado cuando se actualiza el cliente
-	public Cliente update(@RequestBody Cliente cliente, @PathVariable Long id) {
+	public  ResponseEntity<?> update(@RequestBody Cliente cliente, @PathVariable Long id) {
+		
 		Cliente clienteActual = clienteService.findById(id); //buscamos el cliente a modificar por id  y lo guardamos en clienteActual 
 		
-		//Modificamos los datos del cliente actual
-		clienteActual.setApellido(cliente.getApellido());
-		clienteActual.setNombre(cliente.getNombre());
-		clienteActual.setEmail(cliente.getEmail());
+		Cliente clienteUpdated = null;
+		Map<String, Object> response = new HashMap<>();
 		
-		return clienteService.save(clienteActual);//Realizamo la actualizacion de los datos del clienteActual(que fue buscado por id)
+		//Si el cliente a buscar no existe Retorna un NOT_FOUND
+		if(clienteActual == null) { 
+			response.put("mensaje", "No se pudo editar el cliente ID: ".concat(id.toString().concat(" no existe en la BD")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		
+		//Modificamos los datos del cliente actual
+		try {
+			clienteActual.setApellido(cliente.getApellido());
+			clienteActual.setNombre(cliente.getNombre());
+			clienteActual.setEmail(cliente.getEmail());
+			clienteActual.setCreateAt(cliente.getCreateAt());
+			
+			clienteUpdated = clienteService.save(clienteActual); //Actualizacion del cliente
+			
+		} catch(DataAccessException e) {
+			response.put("mensaje", "Error al actualizar el cliente en la BD");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		response.put("mensaje", "El cliente ha sido actualizado con exito!");
+		response.put("cliente", clienteUpdated);
+		
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
+	
+	
 	
 	//Eliminar un cliente : Metodo DELETE - http://localhost:8080/api/clientes/1
 	@DeleteMapping("/clientes/{id}") 
-	@ResponseStatus(HttpStatus.NO_CONTENT) //Retorna NO_CONTENT code 204 el estado cuando se elimina el cliente
-	public void delete(@PathVariable Long id) {
-		clienteService.delete(id);
+	public ResponseEntity<?> delete(@PathVariable Long id) {
+		Map<String, Object> response = new HashMap<>();
+		
+		try {
+			clienteService.delete(id);
+		} catch(DataAccessException e) {
+			response.put("mensaje", "Error al eliminar el cliente en la BD");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		response.put("mensaje", "El cliente ha sido eliminado con exito!");
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 	
 	
