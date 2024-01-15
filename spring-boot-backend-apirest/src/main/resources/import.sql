@@ -9,3 +9,4 @@ INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Laura', 'Perez
 INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Susana', 'Gomez', 'dert@gmail.com','2018-04-17');
 INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Dana', 'Estrada', 'gdab@gmail.com','2018-03-08');
 INSERT INTO clientes (nombre, apellido, email, create_at) VALUES('Luis', 'rey', 'lui@gmail.com','2019-02-09');
+

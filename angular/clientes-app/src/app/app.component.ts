@@ -6,6 +6,7 @@ import { ClientesComponent } from "./clientes/clientes.component";
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({

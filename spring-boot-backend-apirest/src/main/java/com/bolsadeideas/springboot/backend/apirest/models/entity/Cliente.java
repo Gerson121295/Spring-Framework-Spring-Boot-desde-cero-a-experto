@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -29,6 +30,13 @@ public class Cliente implements Serializable{ //Serializable para guardar atribu
 	@Column(name="create_at") //Se agrego column porque el atributo createAt de la clase "Cliente", en la tabla clientes de la BD se llamara create_at
 	@Temporal(TemporalType.DATE) //A través de esta anotación le asignamos a este campo una conexión entre el formato Date de Java y el formato de Fecha que maneja la base de datos.
 	private Date createAt;
+	
+	//para agregar la fecha de creacion cuando se crea el cliente
+	@PrePersist
+	public void prePersist() {
+		createAt = new Date();
+	}
+	
 	
 /*	
 	//Constructor Vacio

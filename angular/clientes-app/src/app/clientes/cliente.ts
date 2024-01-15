@@ -4,9 +4,9 @@ export class Cliente {
     //Otra forma es modificar el archivo:tsconfig.json: y especificar como false el argumento strict: "strict": false,
     
     id: number; // Solucion 1: id!: number;
-    nombre!: string;
-    apellido!: string;
-    createAt!: string;
-    email!: string;
+    nombre: string;
+    apellido: string;
+    createAt: string;
+    email: string;
     
 }

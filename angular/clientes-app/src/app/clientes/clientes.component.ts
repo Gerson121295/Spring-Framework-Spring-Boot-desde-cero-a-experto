@@ -2,11 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Cliente } from './cliente';
 import { CommonModule } from '@angular/common';
 import { ClienteService } from './cliente.service';
+import { RouterModule } from '@angular/router';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-clientes',
   standalone: true,
-  imports: [CommonModule], 
+  imports: [CommonModule,RouterModule], 
   templateUrl: './clientes.component.html'
 })
 export class ClientesComponent implements OnInit{
@@ -59,7 +62,47 @@ clientes: Cliente[]; //Definir variable clientes como un arreglo,
      ); 
   }
 
-
+//Metodo para eliminar un cliente
+delete(cliente: Cliente): void {
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "btn btn-success",
+      cancelButton: "btn btn-danger"
+    },
+    buttonsStyling: false
+  });
+  swalWithBootstrapButtons.fire({
+    title: "Esta seguro?",
+    text: `¿Seguro que desea eliminar al cliente ${cliente.nombre} ${cliente.apellido}?`, //"You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Si, Eliminar",
+    cancelButtonText: "No, Cancelar",
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.clienteService.delete(cliente.id).subscribe(
+        response => {
+          this.clientes = this.clientes.filter(cli => cli !== cliente)
+          swalWithBootstrapButtons.fire({
+            title: "Eliminado!",
+            text: `Cliente ${cliente.nombre} ha sido eliminado. con éxito.`,
+            //text: "El cliente ha sido eliminado.",
+            icon: "success"
+          });
+        }
+      )
+    } else if (
+      result.dismiss === Swal.DismissReason.cancel
+    ) {
+      swalWithBootstrapButtons.fire({
+        title: "Cancelado",
+        text: `El cliente ${cliente.nombre} ${cliente.apellido} no fue eliminado`,//text: "El cliente no fue eliminado",
+        icon: "error"
+      });
+    }
+  });
+}
 
 }
 

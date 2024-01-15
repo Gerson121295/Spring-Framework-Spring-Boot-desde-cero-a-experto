@@ -147,6 +147,40 @@ Queda asi:
             ]
 
 
+-- ### Otra forma de crear componentes es indicandoles la ruta
+ng g c clientes/form --flat  //Componente se creará dentro de la carpeta clientes
+ng g c clientes/form --flat  //Componente se creará dentro de la carpeta clientes y con --flat no creará carpeta form solo las clases dentro de la clientes
+
+
+-- Instalar la libreria Sweetalert2 en angular LinK: https://sweetalert2.github.io/#download
+Ejecutar en consola:	npm install sweetalert2
+- Luego revisamos el archivo package.json para ver que se instalo.
+
+En la nueva versión NO agrega automáticamente los estilos CSS, hay que hacerlo a mano 
+en el archivo angular.json, por ejemplo agregando los estilos en la propiedad "styles":
+Queda así:
+	"styles": [
+              "src/styles.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "./node_modules/sweetalert2/dist/sweetalert2.min.css"
+            ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
