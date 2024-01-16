@@ -6,7 +6,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": false,  /* true  - Para evitar que marque el error en los atributos de las clases.*/
     "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
+    "noPropertyAccessFromIndexSignature": false, /* true */
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
@@ -28,7 +28,7 @@
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true,
+    "strictTemplates": true, /* true*/
     "strictPropertyInitialization": false
   }
 }

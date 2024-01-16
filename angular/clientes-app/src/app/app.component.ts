@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { FormComponent } from './clientes/form.component';
 
 
 @Component({
@@ -15,7 +16,7 @@ import { FormsModule } from '@angular/forms';
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
     imports: [HeaderComponent, FooterComponent, DirectivaComponent, 
-      ClientesComponent, CommonModule, RouterModule, HttpClientModule]
+      ClientesComponent, CommonModule, RouterModule, HttpClientModule,FormComponent, FormsModule]
 })
 //HttpClientModule - Para conectar con el back en springBoot metodos CRUD
 
