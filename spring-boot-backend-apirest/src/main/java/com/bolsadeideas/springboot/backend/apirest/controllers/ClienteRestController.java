@@ -83,6 +83,7 @@ public class ClienteRestController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
+		//Retornamos un MAP con un JSON que contiene mensaje y el cliente.
 		response.put("mensaje", "El cliente ha sido creado con exito!");
 		response.put("cliente", clienteNew);
 		
