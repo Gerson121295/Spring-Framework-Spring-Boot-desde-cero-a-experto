@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ClienteService } from './cliente.service';
 import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
+import { tap } from 'rxjs';
 
 
 @Component({
@@ -56,11 +57,35 @@ constructor(clienteService: ClienteService){ //se agrega la clase ClienteService
 
 clientes: Cliente[]; //Definir variable clientes como un arreglo,
 
+/*
   ngOnInit(): void {
      this.clienteService.getClientes().subscribe( //asignale el arreglo clientes a los datos de la variable CLIENTES del archivo clientes.json.ts
         clientes => this.clientes = clientes //otra forma cuando sea mas de 1 parametro: function (clientes) { this.clientes = clientes }
      ); 
   }
+*/
+
+//Code usando tap para mostrar en consola
+ngOnInit(): void {
+  this.clienteService.getClientes().pipe(
+    tap(clientes => {  //Incluso el tap solo podria ser: --  tap(clientes => this.clientes = clientes)
+      this.clientes = clientes //linea de codigo descrita en el subscribe
+      console.log('ClientesComponent: tap 3 - data')
+        //mostrar los datos de clientes en consola
+        clientes.forEach(cliente => {
+          console.log(cliente.nombre);
+        });
+    })
+  )
+  .subscribe(); // Se podria dejar el subscribe asi y dentro del tap definir:  clientes => this.clientes = clientes
+  /*
+    .subscribe( //asignale el arreglo clientes a los datos de la variable CLIENTES del archivo clientes.json.ts
+     clientes => this.clientes = clientes //otra forma cuando sea mas de 1 parametro: function (clientes) { this.clientes = clientes }
+  ); 
+*/
+}
+
+
 
 //Metodo para eliminar un cliente
 delete(cliente: Cliente): void {
