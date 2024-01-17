@@ -1,13 +1,17 @@
 package com.bolsadeideas.springboot.backend.apirest.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +20,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bolsadeideas.springboot.backend.apirest.models.entity.Cliente;
 import com.bolsadeideas.springboot.backend.apirest.models.services.IClienteService;
+
+import jakarta.validation.Valid;
 
 //CORS sig: Intercambio de recursos de origen cruzado  - Permite a los navegadores enviar y recibir datos restringidos (script, archivos de un dominio a otro diferente)
 //CORS (Cross-Origin Resource Sharing) es un mecanismo que, a través de las cabeceras de los encabezados HTTP, va a permitir a un determinado cliente (User-Agent) a acceder a los recursos de un servidor diferente al del servidor actual
@@ -68,12 +73,39 @@ public class ClienteRestController {
 	
 	//Guardar o crear cliente : Metodo POST - http://localhost:8080/api/clientes  ->  { "nombre": "Turco",  "apellido":"Reu", "email": "turquin@gmail.com" }
 	@PostMapping("/clientes")
-	public ResponseEntity<?> create(@RequestBody Cliente cliente) {
+	public ResponseEntity<?> create(@Valid  //valid va al inicio para validaciones definidas en la clase Cliente @Empty, @Email
+			@RequestBody Cliente cliente,
+			BindingResult result //para saber si ocurrio un problema en la validacion. El bindingResult va despues de la clase Cliente a validar,
+			) {
 		//cliente.setCreateAt(new Date()); //para agregar la fecha de creacion cuando se crea el cliente, otra forma de agregar una fecha es en la clase cliente lo cual se hizo.
 	
 		//Manejar problemas que pueden darse en la BD
 		Cliente clienteNew = null;
 		Map<String, Object> response = new HashMap<>();
+		
+		//Validar si contiene errores los datos del cliente
+		if(result.hasErrors()) { //si hay errores
+			
+			//Forma 1: Usando For para recorrer los campos
+			/*List<String> errors = new ArrayList<>(); //lista errors contendra los errores
+			
+			for(FieldError err: result.getFieldErrors()) { //recorremos los campos
+				errors.add("El campo '" + err.getField()+ "' " + err.getDefaultMessage()); //si hay error lo agrega a la lista errors
+			}
+			*/
+			
+			//Forma 2: Usando Stream
+			List<String> errors = result.getFieldErrors() //convertir esta lista FieldErrors en un stream
+					.stream()
+					.map(err -> { //opcional: Podemos quitar las llaves y el return
+						return "El campo '" + err.getField()+ "' " + err.getDefaultMessage();
+						})
+					//Ahora convertimos el Stream en una lista del tipo String
+					.collect(Collectors.toList());
+			
+			response.put("errors", errors); //muestra los mensajes de error
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+		}
 				
 		try {
 			clienteNew = clienteService.save(cliente); //Crea o guarda  al cliente en la BD
@@ -94,12 +126,42 @@ public class ClienteRestController {
 	
 	//Editar un cliente  :  Metodo PUT - http://localhost:8080/api/clientes/3   ->  {"nombre": "Ivan", "apellido": "Godinez", "email": "ivas@gmail.com" }
 	@PutMapping("/clientes/{id}") 
-	public  ResponseEntity<?> update(@RequestBody Cliente cliente, @PathVariable Long id) {
+	public  ResponseEntity<?> update(@Valid  //valid va al inicio, para validaciones definidas en la clase Cliente @Empty, @Email
+			@RequestBody Cliente cliente, 
+			BindingResult result, //El bindingResult va despues de la clase Cliente a validar, para saber si ocurrio un problema en la validacion
+			@PathVariable Long id
+			) {
 		
 		Cliente clienteActual = clienteService.findById(id); //buscamos el cliente a modificar por id  y lo guardamos en clienteActual 
 		
 		Cliente clienteUpdated = null;
 		Map<String, Object> response = new HashMap<>();
+		
+		
+		//Validar si contiene errores los datos del cliente
+		if(result.hasErrors()) { //si hay errores
+					
+			//Forma 1: Usando For para recorrer los campos
+			/*List<String> errors = new ArrayList<>(); //lista errors contendra los errores
+					
+			  for(FieldError err: result.getFieldErrors()) { //recorremos los campos
+					errors.add("El campo '" + err.getField()+ "' " + err.getDefaultMessage()); //si hay error lo agrega a la lista errors
+				}
+			*/
+					
+			//Forma 2: Usando Stream
+			List<String> errors = result.getFieldErrors() //convertir esta lista FieldErrors en un stream
+				.stream()
+				.map(err -> { //opcional: Podemos quitar las llaves y el return
+				return "El campo '" + err.getField()+ "' " + err.getDefaultMessage();
+				})
+			//Ahora convertimos el Stream en una lista del tipo String
+				.collect(Collectors.toList());
+					
+				response.put("errors", errors); //muestra los mensajes de error
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+				}
+		
 		
 		//Si el cliente a buscar no existe Retorna un NOT_FOUND
 		if(clienteActual == null) { 

@@ -62,6 +62,12 @@ create(cliente:Cliente) : Observable<Cliente>{ //Observable<Cliente> se cambio a
     map((response: any)=> response.cliente as Cliente),
   
   catchError(e => {
+
+    //Controlar el error de validacion de datos al crear el cliente(email cumpla con el formato, nombre y apellido no esten vacios)
+    if(e.status==400){
+      return throwError(() => e);
+    }
+
       console.error(e.error.mensaje);
       Swal.fire(e.error.mensaje, e.error.error, 'error');
       return throwError(() => e); //retorna el objeto de error pero convertido en un observable
@@ -86,6 +92,12 @@ create(cliente:Cliente) : Observable<Cliente>{ //Observable<Cliente> se cambio a
  update(cliente : Cliente) : Observable<any>{ //Observable<Cliente>
   return this.http.put<any>(`${this.urlEndPoint}/${cliente.id}`, cliente, {headers: this.HttpHeaders}).pipe( // en put<Cliente> se castea a <Cliente> porque retorna un objeto cliente actualizado
   catchError(e => {
+
+        //Controlar el error de validacion de datos al crear el cliente(email cumpla con el formato, nombre y apellido no esten vacios)
+        if(e.status==400){
+          return throwError(() => e);
+        }
+
     console.error(e.error.mensaje);
     Swal.fire(e.error.mensaje, e.error.error, 'error');
     return throwError(() => e); //retorna el objeto de error pero convertido en un observable

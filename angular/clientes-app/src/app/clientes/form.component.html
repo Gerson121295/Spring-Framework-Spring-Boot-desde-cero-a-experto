@@ -1,3 +1,8 @@
+
+<ul class="alert alert-danger" *ngIf="errores?.length > 0"> <!-- *ngIf valida si existen elementos dentro de la lista errores -->
+    <li *ngFor="let err of errores">{{err}}</li>
+</ul>
+
 <div class="card bg-dark text-white">
     <div class="card-header">{{titulo}}</div>
     <div class="card-body">
@@ -5,7 +10,8 @@
             <div class="form-group row">
                 <label for="nombre" class="col-form-label col-sm-2">Nombre</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="cliente.nombre" name="nombre" placeholder="Nombre" #nombre="ngModel" required minlength="4">  <!--#nombre="ngModel" es el campo que conecta con el div que tiene la alerta cuando no cumpla con la cantidad de caracteres para el nombre minimo 4 caracteres-->
+                    <!-- Se quito la validacion del frontend debido a que se realizo la validacion desde el Backend-->
+                    <input type="text" class="form-control" [(ngModel)]="cliente.nombre" name="nombre" placeholder="Nombre" #nombre="ngModel" > <!-- required minlength="4" : Validacion del Frontend --> <!--#nombre="ngModel" es el campo que conecta con el div que tiene la alerta cuando no cumpla con la cantidad de caracteres para el nombre minimo 4 caracteres-->
                     <!--[(ngModel)]="cliente.nombre" conecta con el atributo o datos de la clase form.component.ts: la directiva ngModel va a poblar con los datos del formulario al objeto cliente y a sus atributos-->
                     <!--Codigo para alerta required campo requerido y minlength el campo debe tener al menos 4 caracteres-->
                     <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)" class="alert alert-danger"> <!--Muestra el mensaje de error cuando se escribe o cuando termina de escribir siempre que no cumpla con la condicion -->
@@ -24,7 +30,7 @@
             <div class="form-group row">
                 <label for="apellido" class="col-form-label col-sm-2">Apellido</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="cliente.apellido" name="apellido" placeholder="Apellido" #apellido="ngModel" required>
+                    <input type="text" class="form-control" [(ngModel)]="cliente.apellido" name="apellido" placeholder="Apellido" #apellido="ngModel"> <!-- required :Validacion del Frontend -->
                      <!--Codigo para alerta required campo requerido-->
                      <div *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)" class="alert alert-danger">
                         <!-- Mensaje de error para el required -->
@@ -38,7 +44,7 @@
             <div class="form-group row">
                 <label for="email" class="col-form-label col-sm-2">Email</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="cliente.email" name="email" placeholder="Email" #email="ngModel" [email]="true" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"> <!--#email="ngModel" required ngModel [email]="true"-->
+                    <input type="text" class="form-control" [(ngModel)]="cliente.email" name="email" placeholder="Email" #email="ngModel" > <!-- [email]="true" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" :Validacion del Frontend-->
                      <!--Codigo para alerta required campo requerido y minlength el campo debe tener al menos 4 caracteres-->
                     <div class="alert alert-danger" *ngIf="email.invalid && (email.dirty || email.touched)"> 
                         

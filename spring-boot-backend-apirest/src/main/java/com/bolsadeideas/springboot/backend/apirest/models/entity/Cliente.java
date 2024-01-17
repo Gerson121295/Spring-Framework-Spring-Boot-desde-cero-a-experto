@@ -12,6 +12,9 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 @Entity //persistencia: define el componente y especifica que una clase es una entidad
 @Table(name="clientes") //cuando la tabla se llama igual que la clase no es necesario agregar name, solo se deja la anotacion: @Table
@@ -22,10 +25,18 @@ public class Cliente implements Serializable{ //Serializable para guardar atribu
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY) //La clave primaria se agregar e incrementa automaticamente
 	private Long id;
+	
 	//@Column(name="nombre", nullable=false)  -Solo se agrega la anotacion @Column cuando el atributo de la clase se llame diferente con el nombre del campo de la tabla de la BD
-	@Column(nullable = false) //El nombre no puede ser falso o ir vacio
+	@NotEmpty(message="no puede estar vacio") //No puede ir vacio el campo
+	@Size(min=4, max=12, message="El tamaño debe estar entre 4 y 12 caracteres") //El minimo de caracteres es de 4 y el maximo es de 12 para el nombre
+	@Column(nullable = false) //el campo de la tabla de la base de datos no puede ser nulo
 	private String nombre;
+	
+	@NotEmpty(message="no puede estar vacio") //@NotEmpty No puede ir vacio el campo
 	private String apellido;
+	
+	@Email(message="no es una direccion de correo bien formada") //El campo correo debe tener un formato de correo
+	@NotEmpty(message="no puede estar vacio") //No puede ir vacio el campo
 	@Column(nullable = false, unique=true) //El email no puede ir vacio o falso y debe ser unico
 	private String email;
 	

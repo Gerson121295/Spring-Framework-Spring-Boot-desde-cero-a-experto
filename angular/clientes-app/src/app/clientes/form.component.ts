@@ -16,6 +16,8 @@ export class FormComponent implements OnInit{
   
   protected cliente: Cliente = new Cliente(); //Inyectamos la clase Cliente
   protected titulo:string = "Crear Cliente";
+  protected errores: string[]; //Array contendra los errores
+
   constructor(private clienteService: ClienteService,
               private router: Router, //Crear cliente
               private activateRoute: ActivatedRoute //cargar cliente -//Metodo buscar Cliente por id:
@@ -57,6 +59,13 @@ export class FormComponent implements OnInit{
         this.router.navigate(['/clientes'])
         Swal.fire('Nuevo Cliente', `Cliente ${cliente.nombre} creado con éxito!`, 'success'); //Describimos la notificacion al crear el cliente.
        // swal.fire({title: 'Nevo cliente', `Cliente ${cliente.nombre} creado con éxito`, icon:'success'})
+      },
+      //Controlar el error de validacion de datos al crear el cliente(email cumpla con el formato, nombre y apellido no esten vacios)
+      err =>{
+        //Pasar los errores encontrado al array errores
+        this.errores = err.error.errors as string[];
+        console.error('Código del error desde el backend: ' + err.status); //Opcional mostrar los mensajes de error en la consola
+        console.error(err.error.errors); //Opcional mostrar los mensajes de error en la consola
       }
     );
   }
@@ -70,8 +79,15 @@ update():void{
     this.router.navigate(['/clientes'])
     //Swal.fire('Cliente Actualizado', `Cliente ${cliente.nombre} actualizado con éxito!`, 'success');
     Swal.fire('Nuevo Cliente', `${json.mensaje} :  ${json.cliente.nombre}`, 'success'); //Forma2: Esta forma muesta el mensaje de notificacion desde el backend al crear un cliente.
-  })
+  },
+      //Controlar el error de validacion de datos al crear el cliente(email cumpla con el formato, nombre y apellido no esten vacios)
+      err =>{
+        //Pasar los errores encontrado al array errores
+        this.errores = err.error.errors as string[];
+        console.error('Código del error desde el backend: ' + err.status); //Opcional mostrar los mensajes de error en la consola
+        console.error(err.error.errors); //Opcional mostrar los mensajes de error en la consola
+      }
+  )
+}
 }
 
-
-}
