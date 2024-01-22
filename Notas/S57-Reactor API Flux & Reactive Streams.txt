@@ -1,0 +1,49 @@
+
+
+	--- Seccion 57: Vintage: Reactor API: Flux & Reactive Streams
+
+	https://projectreactor.io/
+	https://www.reactive-streams.org/
+		https://github.com/reactive-streams/reactive-streams-jvm/blob/v1.0.4/README.md
+	https://reactivex.io/
+
+-- Crear un nuevo proyecto:
+ - Ir a https://projectreactor.io/ --> Documentation -> Reactor Core-> Reference -> Release o Snapshot -> 
+ -> Getting Reactor -> copiar las dependencias: Maven Installation
+
+-- Crear proyecto en Ecliplse:
+ - Abrir Eclipse -> Clic en File -> New -> Other -> Spring Boot -> Spring Starter Project
+ 
+-- Agregar los datos del proyecto en Spring Boot
+- Name: spring-boot-reactor
+- Location: Elegir la ubicacion del proyecto a guardar.
+- Type: Maven 	- Packaging: Jar	- Java Version: 17	Language:Java
+- Group: com.bolsadeideas.springboot.reactor
+- Artifact: spring-boot-reactor
+- Package: com.bolsadeideas.springboot.reactor.app
+
+-- Clic en Next
+- Seleccionar las dependencias: NO SE SELECCIONO NINGUNA:
+-- Clic en Finalizar
+
+-- Abrir el pom.xml del proyecto y pegar ahi las dependencias de reactor
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
