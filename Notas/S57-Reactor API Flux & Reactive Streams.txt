@@ -30,6 +30,45 @@
 
 
 
+	--- Seccion 58: Vintage: WebFlux
+-- Crear proyecto en Ecliplse:
+ - Abrir Eclipse -> Clic en File -> New -> Other -> Spring Boot -> Spring Starter Project
+ 
+-- Agregar los datos del proyecto en Spring Boot
+- Name: spring-boot-webflux
+- Location: Elegir la ubicacion del proyecto a guardar.
+- Type: Maven 	- Packaging: Jar	- Java Version: 17	Language:Java
+- Group: com.bolsadeideas.springboot.webflux
+- Artifact: spring-boot-reactor
+- Package: com.bolsadeideas.springboot.webflux.app
+
+-- Clic en Next
+- Seleccionar las dependencias: 
+ - Thymeleaf	- Spring Reactive Web (o puede ser WEB (pero solo seleccionar 1 no ambos)
+ - En NoSQL seleccionar: Spring Data ReactiveMongoDB (Notas las BD SQL no tienen soporte para reactive) 
+-- Clic en Finalizar
+
+-- Abrir el pom.xml del proyecto y pegar ahi las dependencias de reactor
+
+
+-- Se nos olvido agregar la dependencia Devtools(para que recargue automaticamente el servidor al guardar el codigo
+- Agregar la dependencia Devtools:
+- Ir a: https://spring.io/  -> Projects -> Spring Boot -> LEARN -> Ver la version Actual de Spring y clic en Reference Doc.  
+
+-- Descargar la version Community de mongo
+- Luego: Agregar la ruta de la ubicacion de mongo a las variables de entorno:
+- Ir a Este equipo ubicarse en espacio en blanco de Dispositos y unidades y clic derecho ahi y clic en propiedades ->
+-> luego clic en configuracion avanzada del sistema(Panel de control\Sistema y seguridad\Sistema) Se abre Propiedades del sistema
+-> Clic en Variables de entorno -> Ubicarme En Variables del sistema -> Clic en Path -> Clic en Editar -> Nuevo y ahi se debe
+-> pegar la ruta donde se encuentra instalado mongo especificamente la parte del bin(ahi estan los ejecutables): (C:\Program Files\MongoDB\Server\7.0\bin)
+-> Luego clic en Aceptar -> clic en Aceptar -> clic en Aceptar 
+
+--> Abrir la terminal para ver si se instalo mongo: mongod --version
+-- Ejecutar en la termnal: mongo   //muestra la BD actual
+
+
+-- URL de mongo DB: mongodb://localhost:27017
+
 
 
 
