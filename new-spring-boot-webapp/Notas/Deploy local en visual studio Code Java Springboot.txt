@@ -1,0 +1,79 @@
+
+---  Despliegue y ejecución desde terminal (deploy Local en Visual Studio Code)  ---
+
+- Abrir la terminal de VSC --> Ubicarnos en la carpeta del proyecto de SpringBoot
+- Revisar la carpeta Target del proyecto no debe tener ningun JAR
+
+--Verificar que la version del POM sea la que tengo instalada en mi pc
+   - En el POM.xml tengo la Version 17
+   - Ejecutar en la terminal para ver la version:
+	- PS C:\Users\Escritorio\springboot-web> java -version
+				java version "17.0.4.1" 2022-08-18 LTS //tengo la 17
+- Ejecutar los comandos:
+   - PS C:\Users\Escritorio\springboot-web> ls
+   - PS C:\Users\Escritorio\springboot-web> .\mvnw clean package   //el clean es para limpiar la carpeta Target por si ya hay un archivo .jar
+   - Tendrá que aparecer:
+	[INFO] ------------------------------------------------------------------------
+	[INFO] BUILD SUCCESS
+	[INFO] ------------------------------------------------------------------------
+
+   - Luego procedemos a ir a la carpeta Target a buscar el archivo .jar: el que sirve es el que termina con .jar
+   - PS C:\Users\Escritorio\springboot-web>cd target
+	- Ya se encuentra los archivos .jar: 
+	-a----         5/02/2024     13:21       23789759 springboot-web-0.0.1-SNAPSHOT.jar
+	-a----         5/02/2024     13:21          15479 springboot-web-0.0.1-SNAPSHOT.jar.original
+   - Ejecutar:
+   - PS C:\Users\Escritorio\springboot-web> java -jar ./springboot-web-0.0.1-SNAPSHOT.jar
+	//Y listo el proyecto ya esta desplegado: podemos ir al navegador y probar las URL del proyecto.
+	
+
+### Deploy maven desde visual code
+- En VSC en la carpeta del Proyecto de SpringBoot
+- Desplegar la pestaña de MAVEN 
+- Especificamente desplegar Lifecycle
+	- Clic en Clean  //Elimina los archivo .jar generados que tengamos en la carpeta Target
+	- Clic en Package //Genera el package y los archivos .jar
+
+   - Luego procedemos a ir a la carpeta Target a buscar el archivo .jar: el que sirve es el que termina con .jar
+   - PS C:\Users\Escritorio\springboot-web>cd target
+	- Ya se encuentra los archivos .jar: 
+	-a----         5/02/2024     13:21       23789759 springboot-web-0.0.1-SNAPSHOT.jar
+	-a----         5/02/2024     13:21          15479 springboot-web-0.0.1-SNAPSHOT.jar.original
+   - Ejecutar:
+   - PS C:\Users\Escritorio\springboot-web> java -jar ./springboot-web-0.0.1-SNAPSHOT.jar
+	//Y listo el proyecto ya esta desplegado: podemos ir al navegador y probar las URL del proyecto.
+	
+
+NOTA IMPORTANTE: Luego de generar el .jar de nuestro proyecto SpringBoot
+Al hacer un clean, y despues de querer levantar nuestro proyecto en visual studio code
+nos genera el error de que no encuentra la clase principal:
+Debemos ir a VSC en la carpeta del Proyecto de SpringBoot
+- Desplegar la pestaña de MAVEN 
+- Y en la pestaña de MAVEN dar clic icono de la Ruedita "Reload all maven Project"
+- Luego volver a SPRING BOOT DASHBOARD y ejecutar y levantar el proyecto en VSC.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Document</title>
+</head>
+<body>
+    <h1 th:text="${title}"></h1>
+
+    <ul>
+        <li th:text="${user.name}"></li>  <!--  <li th:text="${name}"></li> -->
+        <li th:text="${user.lastname}"></li>
+        <li th:if="${user.email != null}" th:text="${user.email}"></li> <!-- if si no existe correo que no aparezca el li de correo. Otra forma: th:if="${user.email}" -->
+        <li th:if="${(user.email == null)}" th:text="${'No tiene correo'}"></li> <!-- Si el user no tiene correo aparece de texto: No tiene correo. Otra forma: th:if="${not (user.email != null)}" -->
+    </ul>
+
+    <a th:href="@{/list}">ver listado</a><br>
+   <a th:href="@{'/api/params/foo?message=' + ${title}}">ver mensaje</a> <br>
+    <!-- <a th:href="@{/api/params/foo?message=Hola que tal festival}">ver mensaje</a> -->
+    <a th:href="@{/api/params/foo(message='hello bro')}">ver mensaje2</a> <br> <!-- esta ruta - Recibe 1 parametros -->
+    <a th:href="@{/api/params/bar(text='Hola que tal mundo', code=1212)}">ver bar</a> <br>  <!-- esta ruta - Recibe 2 parametros -->
+    <a th:href="@{/api/var/baz/Hola algun mensaje}">ver bar mix 2 param</a> <br> <!-- esta ruta - Recibe 2 parametros -->
+    <a th:href="@{'/api/var/baz/' + ${title}}">ver bar path variable</a>  <br>  <!-- esta ruta - Recibe 2 parametros -->
+    <a th:href="@{'/api/var/baz/' + 'Hola amigos how are you'}">ver bar path variable 2</a>    <!-- esta ruta - Recibe 2 parametros -->
+
+</body>
+</html>
