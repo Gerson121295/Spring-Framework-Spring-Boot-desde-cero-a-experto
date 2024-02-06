@@ -9,18 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gerson.springboot.di.app.springbootdi.models.Product;
-import com.gerson.springboot.di.app.springbootdi.services.ProductServiceImpl;
-
+import com.gerson.springboot.di.app.springbootdi.services.ProductService;
 
 @RestController
 @RequestMapping("/api")
 public class SomeController {
 
-    
     //private ProductServiceImpl service = new ProductServiceImpl(); //Se crea la instancia e Inyecta para acceder a los metodos que obtiene los datos
 
     @Autowired  //No tenemos que crear la instancia ni llamarla Spring se encargará de crear y llamarla.
-    private ProductServiceImpl service;  //Se inyecta
+    private ProductService service;  //Se inyecta la interfaz ProductService
 
     @GetMapping
     public List<Product> list(){
