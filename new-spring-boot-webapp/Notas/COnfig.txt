@@ -1,0 +1,4 @@
+
+Si se quiere eliminar que aparezcan nombres de las variables en codigo como constructores metodos etc.
+en Visual Studio COde se puede quitar.
+Hay que ir a la carpeta .vscode -> settings.json y agregar: "editor.inlayHints.enabled": "off"
