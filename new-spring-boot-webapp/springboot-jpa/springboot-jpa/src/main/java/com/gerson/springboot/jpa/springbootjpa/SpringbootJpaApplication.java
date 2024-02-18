@@ -41,10 +41,15 @@ public class SpringbootJpaApplication implements CommandLineRunner{//CommandLine
 		//personalizedQueriesBetween();
 		//queriesFuncionAggregation();
 		//subQueries();
-		whereIn();
-		whereNotIn();
+		//whereIn();
+		//whereNotIn();
+
+		//create();
+		update();
 
 	}
+
+
 
 	@Transactional(readOnly = true)
 	public void whereIn(){
