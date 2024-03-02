@@ -8,7 +8,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +25,8 @@ import com.gerson.springboot.app.springbootcrudjpa.services.ProductService;
 
 import jakarta.validation.Valid;
 
+  //CORS - Intercambio de origen cruzado para conexion entre el backend y el frontend
+@CrossOrigin(origins = "http://localhost:4200", originPatterns = "*")
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -33,13 +37,15 @@ public class ProductController {
     //Inyeccion para Validar los atributos de la clase Product usando la clase: ProductValidation
     //@Autowired
     //private ProductValidation validationP;
-
+    
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','USER')") //forma 2 de agregar seguridad, roles: users admin podran listar todos los productos. Pre antes de que se ejecute el metodo
     public List<Product> list(){
         return service.findAll();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')") //forma 2 de agregar seguridad, roles: users admin podran listar productos por id.
     public ResponseEntity<?> view(@PathVariable Long id){
         Optional<Product> productOptional = service.findById(id); //Buscamos el producto
 
@@ -51,6 +57,7 @@ public class ProductController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')") //forma 2 de agregar seguridad, solo admin podran crear productos, la forma 1 se define en SpringSecurityCOnfig: .requestMatchers(HttpMethod.POST,"/api/products").hasRole("ADMIN")
     public ResponseEntity<?> create(@Valid @RequestBody Product product, BindingResult result){ //Valid para validar los atributos de Product definidos en la Clase Product, bindingResult contiene los mensajes de error que se optuvieron
         
         //validationP.validate(product, result); //Al crear: Ejemplo Valida los atributos de la clase Product usando la clase: ProductValidation
@@ -63,8 +70,13 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productNew); //Otra forma agregarlo todo y eliminar 1 linea de codigo: .body(service.save(product));
     }
 
+/* Probar POST: http://localhost:8080/api/products
+{"name": "Producto comedor", "price": 2000, "description": "producto comedor", "sku": "12345"}
+ */
+
     //Forma 2 Optimizada de Update.
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')") //forma 2 de agregar seguridad, solo admin podran editar productos,
     public ResponseEntity<?> update(@Valid @RequestBody Product product, BindingResult result, @PathVariable Long id){
 
         //validationP.validate(product, result); //Al Update: Ejemplo Valida los atributos de la clase Product usando la clase: ProductValidation
@@ -82,6 +94,7 @@ public class ProductController {
     } 
 
     //Forma 2 - Optimizada: Elimina por id
+    @PreAuthorize("hasRole('ADMIN')") //forma 2 de agregar seguridad, solo admin podran eliminar productos,
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         Optional<Product> productOptional = service.delete(id); //eliminamos el producto y lo guardamos en productOptional

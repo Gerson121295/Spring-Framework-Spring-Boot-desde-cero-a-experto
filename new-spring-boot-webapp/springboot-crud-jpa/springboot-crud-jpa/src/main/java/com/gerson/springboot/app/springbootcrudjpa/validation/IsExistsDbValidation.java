@@ -19,8 +19,14 @@ public class IsExistsDbValidation implements ConstraintValidator<IsExistsDb, Str
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+
+        if(service == null) {//Si el service es igual a null o es valido retornamos true;
+            return true;
+        }
+
         //Si es distinto a null  y si es distinto al sku en la BD de algun producto
        // return value != null && !service.existsBySku(value);
+
        return !service.existsBySku(value); //Solo valida por la BD
     } 
 
