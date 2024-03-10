@@ -1,0 +1,37 @@
+
+ ------  Generar proyecto de React con Vite    ------
+
+- Entrar a la carpeta del proyecto y ejecutar
+	$ npm create vite@latest 
+
+C:\Users\Escritorio\new-spring-boot-webapp\react-js> npm create vite@latest  
+	Ok to proceed? (y) y
+	√ Project name: ... react-app	//Nombre del proyecto
+	√ Select a framework: » React   //Elegir react
+	√ Select a variant: » JavaScript //Elejir JavaScrit
+
+- Luego ir a la carpeta del proyecto creado: 
+	cd react-app y ejecutar: npm install   //para crear la carpeta node_modules
+
+- Levantar el proyecto: ejecutar en consola: npm run dev
+
+- Importamos el proyecto a VSC: Arrastramos la carpeta react-app a VSC
+
+
+Realizamos Instalacion de Props-Type:
+	npm i prop-types  //Verificamos si ya esta intalado en el package.json
+
+
+-- Instalar la libreria axios para react y hacer peticion al backend
+-- Abrir consola y ejecutar:  npm i axios
+
+
+
+
+
+
+
+
+
+
+
