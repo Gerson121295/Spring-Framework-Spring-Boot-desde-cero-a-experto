@@ -1,0 +1,50 @@
+
+
+<!-- Si enabled es 'true' muestra 'Ocultar' si es 'false' muestra 'Mostrar' -->
+<!-- Ejemplo anterior 
+<button type="button" (click)="setEnabled()">
+
+  {{enabled ? 'Ocultar' : 'Mostrar'}}
+</button>
+
+<!-- Forma 1 de usar *ngIf y *ngFor: Programatica para angular 17-->
+ <!--
+@if (enabled){
+<h2>{{title}}</h2>
+<ul>
+  <!-- Recorre la variable courses de app.components y lo guarda en course para luego mostrarlo en el li-->
+  <!--
+  @for (course of courses; track $index) {
+  <li>
+    {{course}}
+  </li>
+  }
+</ul>
+}@else {
+<h2>Lo sentimos no esta disponible</h2>
+}
+
+
+<!-- Forma 2 de usar *ngIf y *ngFor: Forma de plantillas -->
+ <!--
+<div *ngIf="enabled; else notEnabled">
+  <h2>{{title}}</h2>
+</div>
+ <!--
+<ng-template #notEnabled>
+  <div>Lo sentimos no esta disponible</div>
+</ng-template>
+ <!--
+<!-- Muestra la iteracion solo cuando esta habilitado -->
+ <!--
+<ul *ngIf="enabled"> 
+  <!--iterar con ngFor  Recorre la variable courses de app.components y los guarda en course que muestra en el li -->
+ <!--
+  <li *ngFor="let course of courses">{{course}}</li> 
+</ul>
+-->
+
+<!-- AQUI SE MOSTRARA LAS VISTAS HTML DE OTROS COMPONENTES PAGINAS HTML  -->
+<!-- Es el selector llamado: 'app-product' de la clase: product.component.ts -->
+<app-product></app-product>
+

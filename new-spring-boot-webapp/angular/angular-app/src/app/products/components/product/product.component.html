@@ -1,0 +1,49 @@
+
+<div class="container my-5">
+
+<h2>Listado de productos!</h2>
+<div class="row">
+    <div class="col">
+
+        <!-- Para usar un html de otro componente se agrega su selector definido en ese componente "product-form"
+        y se debe importar ese componente con el nombre de la clase que aparece en form.component.ts "FormComponent" en este component product.component.ts -->
+    <product-form (newProductEvent)="addProduct($event)" [product]="productSelected"></product-form>
+
+    </div>
+    <div class="col">
+
+<!-- products definido en product.component guardara los datos que vienen del backend, 
+muestra la tabla si productos es mayor a 0, si no entonces no existen productos y muestra mensaje -->
+@if(products.length>0){
+    <table class="table table-hover table-striped">
+        <thead>
+          <!--   <th>id</th> -->
+            <th>name</th>
+            <th>description</th>
+            <th>price</th>
+            <th>update</th>
+            <th>remove</th>
+        </thead>
+        <tbody>
+            @for(product of products; track $index){
+                <tr>
+                    <!-- <td>{{product.id}}</td> -->
+                    <td>{{product.name}}</td>
+                    <td>{{product.description}}</td>
+                    <td>{{product.price}}</td>
+                    <td><button (click)="onUpdateProduct(product)" class="btn btn-sm btn-secondary"> update </button>
+                    <td><button (click)="onRemoveProduct(product.id)" class="btn btn-sm btn-danger"> remove </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+}@else {
+    <div class="alert alert-info">lo sentimos no hay registros en el sistema</div>
+}
+
+</div>
+</div>
+</div>

@@ -1,0 +1,41 @@
+
+
+//Instalaciones Para angular:
+Instalar node version LTS: https://nodejs.org/en  //Revisar instalacion en CMD modo admin: node -v  y npm -v
+Instalar TypeScript: npm install -g typescript    //Revisar instalacion: tsc -v
+Instalar Angular: npm install -g @angular/cli    //Revisar instalacion: ng version
+Abrir el powerShell de windows y ejecutar: Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+
+Crear un Proyecto de Angular: ng new angular-app  -> Otra forma agrega app.module.ts: ng new angular-app --no-standalone
+-Proceso de creacion del proyecto
+	PS C:\User\desktop\new-spring-boot-webapp\angular> ng new angular-app
+	? Which stylesheet format would you like to use? CSS
+	? Do you want to enable Server-Side Rendering (SSR) and Static Site Generation (SSG/Prerendering)? No
+
+luego ejectutar la aplicacion entrar a la carpeta del proyecto y ejecutar:
+Run the application: cd angular-app  ->  ng serve --open   -> http://localhost:4200/
+
+- Luego arrastrar la carpeta del proyecto angular-app creado a VSC
+
+-- Creacion de componente en angular
+- Forma 1: Clic derecho sobre src o app y clic en crear carpeta ya gregar nombre.
+- Forma 2: Por consola ejecutar dentro de la ruta del proyecto Para crear el componente "product" se crea la carpeta products/components y el componente product
+ angular-app> ng generate component products/components/product
+
+//Crear el service
+ angular-app> ng generate service products/services/product
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
