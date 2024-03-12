@@ -1,4 +1,6 @@
-<form (ngSubmit)="onSubmit()" #productForm="ngForm">
+
+<!-- agregar productForm al form resuelve el error de que no se quita la validacion en el form aparecen los mensajes despues de haber escrito correctamente-->
+<form (ngSubmit)="onSubmit(productForm)" #productForm="ngForm">
     <div>
         <input type="text" 
         class="form-control my-2" 
@@ -10,7 +12,7 @@
         minlength="3"
         >
         <!-- required es requerido, #name="ngModel" para validacion: *ngIf Si el dato es invalido, sucio y tocamos fuera del campo-->
-        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger"> <!-- class="alert alert-danger" -->
             <div *ngIf="name.errors!['required']">
                 Nombre es requerido
             </div>

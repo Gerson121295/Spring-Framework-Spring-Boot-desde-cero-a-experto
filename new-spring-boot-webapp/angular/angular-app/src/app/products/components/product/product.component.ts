@@ -33,17 +33,38 @@ export class ProductComponent implements OnInit{
 
     //Valida si el objeto product que recibe de parametro su id es > 0 entonces ese producto ya existe entonces se actualizara, si el id es menor entonces ese producto no existe se tendra que crear. 
     if(product.id > 0){
-      this.products = this.products.map(prod => {
+      //Actualiza un producto y Conecta con el backend y guarda en la BD 
+      this.service.update(product).subscribe(productUpdated => {
+
+        this.products = this.products.map(prod => {
+          if(prod.id == product.id){ //si el prod.id(de la BD) es igual product.id(id del producto que recibe del formulario)
+            return {... productUpdated}; //cambiamos el elemento o registros de la BD por el nuevo que viene del formulario
+          }
+          return prod; //si no es igual retornamos el objeto existente
+        })
+      })
+
+      //Ejemplo de actualizar el product a la lista local
+/*      this.products = this.products.map(prod => {
         if(prod.id == product.id){ //si el prod.id(de la BD) es igual product.id(id del producto que recibe del formulario)
           return {...product}; //cambiamos el elemento o registros de la BD por el nuevo que viene del formulario
         }
         return prod; //si no es igual retornamos el objeto existente
       })
+*/      
     }else{ 
       //El id es menor entonces ese producto no existe se tendra que crear. 
+      //Crea un producto a la lista local
     //product.id = new Date().getTime(); //Forma 1: genera un id unico random a partir de la fecha
     //this.products.push(product); //Forma1: mutable: agrega el objeto al final de la lista
-    this.products = [... this.products, { ...product, id: new Date().getTime() }]; //Forma 2 inmutable - agrega el objeto a la lista de productos. cada punto representa un campo del objeto
+    //this.products = [... this.products, { ...product, id: new Date().getTime() }]; //Forma 2 inmutable - agrega el objeto a la lista de productos. cada punto representa un campo del objeto
+  
+    //Crea un producto y conecta con el backend y guarda en la BD 
+    this.service.create(product).subscribe(productNew => { //productNew viene de la BD
+    //this.products.push({ ...productNew}); //Forma1: mutable: agrega el productNew al final 
+    this.products = [... this.products, { ...productNew}]; //Forma 2 inmutable - agrega el objeto a productos. cada punto representa un campo del objeto
+    })
+  
   }
 
   //Limpiar los campos del formulario luego de actualizar o crear un registro
@@ -57,7 +78,14 @@ export class ProductComponent implements OnInit{
 
   //Eliminar producto
   onRemoveProduct(id:number): void{
-    this.products = this.products.filter(product => product.id != id); //filtro pasan todos menos el que tenga el id del producto a eliminar recibido en el parametro, se crea un nuevo lista sin el producto del id a eliminar
+    //Elimina un producto de la lista local
+    //this.products = this.products.filter(product => product.id != id); //filtro pasan todos menos el que tenga el id del producto a eliminar recibido en el parametro, se crea un nuevo lista sin el producto del id a eliminar
+  
+    //Elimina un producto y conecta con el backend y elimna el producto en la BD 
+    this.service.remove(id).subscribe(() =>{ //no se subscribe a nada: ()
+      this.products = this.products.filter(product => product.id != id); //filtro pasan todos menos el que tenga el id del producto a eliminar recibido en el parametro, se crea un nuevo lista sin el producto del id a eliminar
+   })
+  
   }
 }
 

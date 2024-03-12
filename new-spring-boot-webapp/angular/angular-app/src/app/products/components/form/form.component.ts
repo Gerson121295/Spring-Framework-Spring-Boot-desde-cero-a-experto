@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Product } from '../../models/product';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -24,9 +24,15 @@ export class FormComponent {
   @Output() newProductEvent = new EventEmitter(); //transferir una informacion al padre.
 
 
-  onSubmit(): void{
-    this.newProductEvent.emit(this.product); //recibe el objeto y se le envia al padre ahora en product.component.html el padre lo recibe por lo que se agrega (newProductEvent)="addProduct($event) la funcion que llama un metodo descrito en el padre product.component.ts
-    console.log(this.product);
+  onSubmit(productForm:NgForm): void{ //productForm:NgForm resolvemos el error de que no se quita la validacion en el form aparecen los mensajes despues de haber escrito correctamente
+    if(productForm.valid){ //si es valido los campos en el form ejecutamos creamos o actualizamos el producto 
+      this.newProductEvent.emit(this.product); //recibe el objeto y se le envia al padre ahora en product.component.html el padre lo recibe por lo que se agrega (newProductEvent)="addProduct($event) la funcion que llama un metodo descrito en el padre product.component.ts
+      console.log(this.product);
+    }
+    //Si no es valido los campos en el form reseteamos el formulario
+    productForm.reset();
+    productForm.resetForm(); //al hacer el submit resetea los valores del formulario a valores iniciales.
+    
   }
 
   //limpia el formulario
